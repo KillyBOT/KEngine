@@ -56,8 +56,7 @@ There will be queues for each, or at least most, steps for the pipeline. That wi
 		- Material (material.h, material.c)
 			- Textures (texture.h, texture.c)
 	- Geometry (geo.h)
-		- Polygons (polygon.h, polygon.c)
-		- Lines (line.h, line.c)
+		- Including polygons and lines
 	- Matrix (matrix.h)
 		- Matrix handling functions (matrix.c)
 		- Matrix mathematical functions (matrix_op.c)
@@ -65,6 +64,8 @@ There will be queues for each, or at least most, steps for the pipeline. That wi
 	- Fragment (fragment.h, fragment.c)
 	- Queue (queue.h, queue.c)
 - Functions
+	- Basic math functions (gmath.h, gmath.c)
+		- So like lerp, finding surface normal, normalizing, etc.
 	- Lighting functions (light.h)
 		- These lighting/shading functions will probably happen on a per-pixel basis during the fragment shader phase
 		- Phong reflection calculations (phong_ref.c)
