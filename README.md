@@ -30,13 +30,31 @@ My own personal graphics engine. I got inspiration from my graphics class, and I
 
 There will be queues for each, or at least most, steps for the pipeline. That will make handling much easier.
 
+## General structures:
+
+- Vertex queue (queue)
+	- This will be where vertices are added to initially, and possibly where they are transformed.
+- Geometry queue (queue)
+	- This will be where polygons/lines will be added. They will be then read in rasterization and put onto the fragment buffer
+- Fragment buffer (2D buffer)
+	- This will be where the fragments are stored. The structure should be SCREEN_WIDTH x SCREEN_HEIGHT large
+- Pixel buffer (2D buffer)
+	- This is where the final pixel structures will be stored. The structure should be SCREEN_WIDTH by SCREEN_HEIGHT large
+	- This structure will also be altered when per-sampling operations occur
+- Material list (hash table)
+	- This will be where each material loaded will be placed. They will be hashed using their names, at least for now
+- Light list (queue)
+	- This will be where each light will be stored. Each light will be iterated through when doing lighting
+- Texture list (hash table)
+	- This is where each loaded texture will be stored. They will too be accessed by their name. 
+
 ## Planned Architecture of the program:
 
 - Constants & other basic stuff (KEngine.h)
 - Structures
 	- Vertex (vertex.h, vertex.c)
 		- Material (material.h, material.c)
-			- This will also include textures
+			- Textures (texture.h, texture.c)
 	- Geometry (geo.h)
 		- Polygons (polygon.h, polygon.c)
 		- Lines (line.h, line.c)
@@ -47,9 +65,17 @@ There will be queues for each, or at least most, steps for the pipeline. That wi
 	- Fragment (fragment.h, fragment.c)
 	- Queue (queue.h, queue.c)
 - Functions
+	- Lighting functions (light.h)
+		- These lighting/shading functions will probably happen on a per-pixel basis during the fragment shader phase
+		- Phong reflection calculations (phong_ref.c)
+		- Blinn-phong reflection calculations (blinn_ref.c)
+		- Phong shading (phong_sh.c)
+		- Gouraud shading (gouraud_sh.c)
+		- Flat shading (flat_sh.c)
+		- Wireframe shading (wireframe_sh.c)
 	- Parsing files (parse.h)
 		- Parsing obj files (parse_obj.c)
-			- Input an obj file, return a list of vertices for the vertex shading pipeline
+			- Input an obj file, return a bunch of vertices
 		- Reading png files (png_read.c)
 			- This will mainly be used in tandem with parse_obj.c in order to read in textures
 		- Maybe I'll allow for different files to be parsed later, but for now obj files are the easiest and most useful
