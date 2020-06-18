@@ -12,7 +12,7 @@ My own personal graphics engine. I got inspiration from my graphics class, and I
 3. Tessellation
 	1. This is something else, I'll tackle this later. Basically, this will split triangles into more triangles to create more complicated meshes. I don't think I will be using this right now.
 4. Geometry shader
-	1. Here is where all the vertex transformations happen
+	1. Here I will update the vertices and turn them into polygon or line structures that will be rasterized. This might be changed later.
 7. Rasterization (Pixel shading)
 	1. This finds out which pixels will actually be drawn. These places will be referred to as "fragments." They hold more info than just their x and y, for example they have texture coordinates and perhaps vertex normals for lighting.
 		1. Fragments that aren't going to be drawn (i.e those behind other fragments) will be discarded
@@ -65,7 +65,8 @@ There will be queues for each, or at least most, steps for the pipeline. That wi
 		- Vertex shading (vshade.c)
 			- Take in a vertex, do some shading and transformations on it, and add that vertex to the geometry shader
 		- Geometry shading (gshade.c)
-			- Take in two or three vertices at a time (depending on whether you're drawing a line or not) and output line or polygon structures. If the polygons aren't going to be rendered because they're not facing the right way, discard them at this step.
+			- Take in two or three vertices at a time (depending on whether you're drawing a line or not) and output line or polygon structures. If the polygons aren't going to be rendered because they're not facing the right way or they are off screen, discard them at this step.
+			- I think I will also add a way to turn polygons that are partially off screen into multiple polygons that are on screen
 		- Fragment shading (fshade.c)
 			- Take in a list of fragments (a SCREEN_WIDTH by SCREEN_HEIGHT sized block of data I think) and return a buffer of pixels
 	- Post-processing (process.h)
