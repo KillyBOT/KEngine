@@ -17,6 +17,13 @@
 #define COLOR_G 1
 #define COLOR_B 2
 
+#define LIGHT_POS 0
+#define LIGHT_COLOR 1
+
+#define ROTATE_X 0
+#define ROTATE_Y 1
+#define ROTATE_Z 2
+
 #define POLYGON_TOP 0
 #define POLYGON_MID 1
 #define POLYGON_BOT 2

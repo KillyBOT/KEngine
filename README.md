@@ -12,7 +12,7 @@ My own personal graphics engine. I got inspiration from my graphics class, and I
 3. Tessellation
 	1. This is something else, I'll tackle this later. Basically, this will split triangles into more triangles to create more complicated meshes. I don't think I will be using this right now.
 4. Geometry shader
-	1. Here I will update the vertices and turn them into polygon or line structures that will be rasterized. This might be changed later.
+	1. Here the vertices and vertex normals will be combined into triangle polygons, and will be added to the geometry queue
 7. Rasterization (Pixel shading)
 	1. This finds out which pixels will actually be drawn. These places will be referred to as "fragments." They hold more info than just their x and y, for example they have texture coordinates and perhaps vertex normals for lighting.
 		1. Fragments that aren't going to be drawn (i.e those behind other fragments) will be discarded
@@ -32,13 +32,19 @@ There will be queues for each, or at least most, steps for the pipeline. That wi
 
 ## General structures:
 
-- Vertex queue (queue)
-	- This will be where vertices are added to initially, and possibly where they are transformed.
+- Vertex matrix (matrix)
+	- This will be where vertices are added to initially, and where they are transformed.
+- Vertex normal matrix (matrix)
+	- This will be where vertex normals are added to initially, and where they are transformed.
+- Vertex texture coord array (array)
+	- This will be where vertex texture coords are accessed. They won't be transformed at all.
+- System stack (stack)
+	- This is where the cstack will be stored. This is the transformation matrix that will be applied to the vertex matrix, along with the vertex normal matrix
 - Geometry queue (queue)
 	- This will be where polygons/lines will be added. They will be then read in rasterization and put onto the fragment buffer
 - Fragment buffer (2D buffer)
-	- This will be where the fragments are stored. The structure should be SCREEN_WIDTH x SCREEN_HEIGHT large
-- Pixel buffer (2D buffer)
+	- This will be where the fragments are stored. The structure should be SCREEN_WIDTH by SCREEN_HEIGHT large
+- Pixel buffer (2D array)
 	- This is where the final pixel structures will be stored. The structure should be SCREEN_WIDTH by SCREEN_HEIGHT large
 	- This structure will also be altered when per-sampling operations occur
 - Material list (hash table)
