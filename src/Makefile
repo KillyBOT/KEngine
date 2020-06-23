@@ -6,14 +6,14 @@ endif
 
 IDIR = ../include
 CFLAGS = -I$(IDIR)
-LIBS = -lm
+LIBS = -lm -lpng
 
 ODIR = ../obj
 
 _DEPS = KEngine.h uthash.h utarray.h vertex.h material.h texture.h matrix.h geometry.h fragment.h light.h process.h shade.h parse.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ = main.o
+_OBJ = main.o draw.o png_write.o mxaa.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 $(ODIR)/%.o: %.c $(DEPS)
