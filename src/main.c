@@ -19,6 +19,7 @@
 #include "parse.h"
 #include "light.h"
 #include "shade.h"
+#include "shape.h"
 #include "process.h"
 #include "draw.h"
 
@@ -34,6 +35,8 @@ extern int SCREEN_HEIGHT_FINAL;
 extern mat_t* mPoints;
 extern mat_t* mNormals;
 extern mat_t* mTextures;
+extern UT_array* cstack;
+extern UT_icd matrix_icd;
 
 
 
@@ -79,26 +82,47 @@ int main(){
 	color_type = PNG_COLOR_TYPE_RGBA;
 	bit_depth = 8;
 
-	int test_mxaa_depth = 8;
+	int test_msaa_depth = 4;
 
 	SCREEN_WIDTH_FINAL = 640;
 	SCREEN_HEIGHT_FINAL = 480;
 
-	SCREEN_WIDTH = SCREEN_WIDTH_FINAL * (int)(log(test_mxaa_depth)/log(2));
-	SCREEN_HEIGHT = SCREEN_HEIGHT_FINAL * (int)(log(test_mxaa_depth)/log(2));
+	SCREEN_WIDTH = SCREEN_WIDTH_FINAL * (int)(log(test_msaa_depth)/log(2));
+	SCREEN_HEIGHT = SCREEN_HEIGHT_FINAL * (int)(log(test_msaa_depth)/log(2));
 
-	init_buffers();
+	init_frameBuffers();
 
-	printf("Buffer initialized\n");
+	matrix_icd.sz = sizeof(mat_t);
+	matrix_icd.init = NULL;
+	matrix_icd.copy = NULL;
+	matrix_icd.dtor = matrix_dtor_icd;
+	utarray_new(cstack, &matrix_icd);
 
-	set_buffers_random();
-	mxaa(test_mxaa_depth);
+	mat_t* cstackInit = matrix_create(4, 4);
+	matrix_ident(cstackInit);
+	utarray_push_back(cstack,cstackInit);
+
+	mPoints = matrix_create(4,1024);
+	mNormals = matrix_create(4,1024);
+	mTextures = matrix_create(4,1024);
+
+	printf("General structures initialized\n");
+
+	shape_box(0,0,0,50,50,50);
+	generate_normals();
+
+	set_frameBuffers_random();
+	msaa(test_msaa_depth);
 
 	write_buffer("test.png");
 
-	printf("Testing...\n");
+	printf("Freeing structures\n");
 
-	free_buffers();
+	free_frameBuffers();
+	matrix_free(mPoints);
+	matrix_free(mNormals);
+	matrix_free(mTextures);
+	utarray_free(cstack);
 
 	return 0;
 }

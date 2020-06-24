@@ -33,7 +33,7 @@ void print_pixel(pixel_t* p){
 	printf("R: [%d] G: [%d] B: [%d]\n", p->c[COLOR_R], p->c[COLOR_G], p->c[COLOR_B]);
 }
 
-void init_buffers(){
+void init_frameBuffers(){
 
 	frameBuffer = (struct pixel_t**)malloc(sizeof(struct pixel_t *) * SCREEN_WIDTH);
 
@@ -45,10 +45,10 @@ void init_buffers(){
 	for(int x = 0; x < SCREEN_WIDTH_FINAL; x++) 
 		frameBuffer_final[x] = (struct pixel_t*)malloc(sizeof(struct pixel_t) * SCREEN_HEIGHT_FINAL);
 
-	clear_buffers();
+	clear_frameBuffers();
 }
 
-void clear_buffers(){
+void clear_frameBuffers(){
 
 	for(int x = 0; x < SCREEN_WIDTH; x++){
 		for(int y = 0; y < SCREEN_HEIGHT; y++){
@@ -69,7 +69,7 @@ void clear_buffers(){
 	}
 }
 
-void set_buffers_random(){
+void set_frameBuffers_random(){
 
 	srand(time(0));
 
@@ -90,7 +90,7 @@ void set_buffers_random(){
 	}
 }
 
-void free_buffers(){
+void free_frameBuffers(){
 	for(int x = 0; x < SCREEN_WIDTH_FINAL; x++){
 		free(frameBuffer_final[x]);
 	}
