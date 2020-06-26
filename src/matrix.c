@@ -89,7 +89,10 @@ void matrix_print_point(mat_t* m, int p){
 }
 Vec4_t *matrix_find(mat_t* m, int p){
 
-	if(p < 0 || p > m->lastcol) return NULL;
+	if(p < 0 || p > m->lastcol) {
+		printf("Error! Trying to access vertex outside of matrix!\n");
+		return NULL;
+	}
 
 	Vec4_t* v = vertex_init(m->m[POS_X][p],m->m[POS_Y][p],m->m[POS_Z][p]);
 	return v;

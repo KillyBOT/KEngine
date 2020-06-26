@@ -90,12 +90,12 @@ void shape_box(double x, double y, double z, double w, double h, double d){
 	matrix_add_point(mPoints,v1);
 	matrix_add_point(mPoints,v1);
 
-	vertex_free(v1);
-	vertex_free(v2);
-	vertex_free(v3);
-	vertex_free(v4);
-	vertex_free(v5);
-	vertex_free(v6);
-	vertex_free(v7);
-	vertex_free(v8);
+	free(v1);
+	free(v2);
+	free(v3);
+	free(v4);
+	free(v5);
+	free(v6);
+	free(v7);
+	free(v8);
 }

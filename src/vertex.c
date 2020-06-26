@@ -9,18 +9,12 @@
 Vec4_t* vertex_init(double x, double y, double z){
 	Vec4_t* v = (Vec4_t*)malloc(sizeof(Vec4_t));
 
-	v->v = (double*)malloc(sizeof(double)*4);
-
 	v->v[POS_X] = x;
 	v->v[POS_Y] = y;
 	v->v[POS_Z] = z;
 	v->v[3] = 1;
 
 	return v;
-}
-void vertex_free(Vec4_t* v){
-	free(v->v);
-	free(v);
 }
 void vertex_print(Vec4_t* v){
 	printf("X:[%.2lf]\tY:[%.2lf]\tZ:[%.2lf]\tT:[%.2lf]\n", v->v[POS_X], v->v[POS_Y], v->v[POS_Z], v->v[3]);
@@ -58,7 +52,7 @@ Vec4_t* vertex_lerp(Vec4_t* v1, Vec4_t* v2, double t){
 }
 void vertex_normalize(Vec4_t* v){
 
-	double length = sqrt( (v->v[POS_X] * v->v[POS_X]) + (v->v[POS_Y] * v->v[POS_Y]) + (v->v[POS_Z] * v->v[POS_Z]));
+	double length = sqrt( (v->v[POS_X] * v->v[POS_X]) + (v->v[POS_Y] * v->v[POS_Y]) + (v->v[POS_Z] * v->v[POS_Z]) );
 
 	if(length == 0) return;
 
@@ -70,20 +64,22 @@ double vertex_dot_product(Vec4_t* a, Vec4_t* b){
 	return a->v[POS_X] * b->v[POS_X] + a->v[POS_Y] * b->v[POS_Y] + a->v[POS_Z] + b->v[POS_Z];
 }
 Vec4_t *vertex_surface_normal(Vec4_t* a, Vec4_t* b, Vec4_t* c){
-	Vec4_t m, n;
-	Vec4_t* f = vertex_init(0,0,0);
+	Vec4_t* sn = vertex_init(0,0,0);
+	double m[3];
+	double n[3];
 
-	m.v[POS_X] = b->v[POS_X] - a->v[POS_X];
-	m.v[POS_Y] = b->v[POS_Y] - a->v[POS_Y];
-	m.v[POS_Z] = b->v[POS_Z] - a->v[POS_Z];
+	m[POS_X] = b->v[POS_X] - a->v[POS_X];
+	m[POS_Y] = b->v[POS_Y] - a->v[POS_Y];
+	m[POS_Z] = b->v[POS_Z] - a->v[POS_Z];
 
-	n.v[POS_X] = c->v[POS_X] - a->v[POS_X];
-	n.v[POS_Y] = c->v[POS_Y] - a->v[POS_Y];
-	n.v[POS_Z] = c->v[POS_Z] - a->v[POS_Z];
+	n[POS_X] = c->v[POS_X] - a->v[POS_X];
+	n[POS_Y] = c->v[POS_Y] - a->v[POS_Y];
+	n[POS_Z] = c->v[POS_Z] - a->v[POS_Z];
 
-	f->v[POS_X] = m.v[POS_Y] * n.v[POS_Z] - m.v[POS_Z] * n.v[POS_Y];
-	f->v[POS_Y] = m.v[POS_Z] * n.v[POS_X] - m.v[POS_X] * n.v[POS_Z];
-	f->v[POS_Z] = m.v[POS_X] * n.v[POS_Y] - m.v[POS_Y] * n.v[POS_X];
+	sn->v[POS_X] = m[POS_Y] * n[POS_Z] - m[POS_Z] * n[POS_Y];
+	sn->v[POS_Y] = m[POS_Z] * n[POS_X] - m[POS_X] * n[POS_Z];
+	sn->v[POS_Z] = m[POS_X] * n[POS_Y] - m[POS_Y] * n[POS_X];
 
-	return f;
+	vertex_normalize(sn);
+	return sn;
 }
