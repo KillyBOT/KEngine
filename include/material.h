@@ -21,12 +21,20 @@ typedef struct {
 	UT_hash_handle hh;
 } mtl_t;
 
+typedef struct {
+	int id;
+	char *name;
+	UT_hash_handle hh;
+} mtlID_t;
+
 mtl_t *gMaterials;
+mtlID_t *gMaterialsID;
 
 void material_add(char* name);
 void material_delete(char* name);
 void material_delete_all();
 mtl_t* material_find(char* name);
+mtl_t* material_find_id(int id);
 void material_print(char* name);
 void material_print_all();
 
