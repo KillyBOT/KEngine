@@ -29,6 +29,8 @@ extern int SCREEN_WIDTH;
 extern int SCREEN_HEIGHT;
 extern int SCREEN_WIDTH_FINAL;
 extern int SCREEN_HEIGHT_FINAL;
+extern int input_width;
+extern int input_height;
 
 
 
@@ -60,6 +62,7 @@ extern png_bytep* row_pointers;
 
 
 
+extern pixel_t ** inputBuffer;
 extern pixel_t ** frameBuffer;
 extern pixel_t ** frameBuffer_final;
 
@@ -110,6 +113,8 @@ int main(){
 
 	shape_box(0,0,0,50,50,50);
 	generate_normals();
+
+	read_jpg_file("drkwood2.jpg");
 
 	set_frameBuffers_random();
 	msaa(test_msaa_depth);

@@ -45,7 +45,7 @@ void msaa(int depth){
 
 			for(int c = 0; c < 3; c++){
 				finalColor[c] /= depth;
-				frameBuffer_final[x][y].c[c] = (byte)finalColor[c];
+				frameBuffer_final[x][y].c[c] = (byte_t)finalColor[c];
 			}
 	
 		}

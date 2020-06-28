@@ -16,7 +16,8 @@ extern int SCREEN_WIDTH;
 extern int SCREEN_HEIGHT_FINAL;
 extern int SCREEN_WIDTH_FINAL;
 
-
+extern int input_width;
+extern int input_height;
 
 extern png_structp png_ptr;
 extern png_infop info_ptr;
@@ -26,6 +27,7 @@ extern png_byte bit_depth;
 
 extern png_bytep* row_pointers;
 
+extern pixel_t ** inputBuffer;
 extern pixel_t ** frameBuffer;
 extern pixel_t ** frameBuffer_final;
 
@@ -35,15 +37,17 @@ void print_pixel(pixel_t* p){
 
 void init_frameBuffers(){
 
-	frameBuffer = (struct pixel_t**)malloc(sizeof(struct pixel_t *) * SCREEN_WIDTH);
+	frameBuffer = (pixel_t**)malloc(sizeof(pixel_t *) * SCREEN_WIDTH);
 
 	for(int x = 0; x < SCREEN_WIDTH; x++) 
-		frameBuffer[x] = (struct pixel_t*)malloc(sizeof(struct pixel_t) * SCREEN_HEIGHT);
+		frameBuffer[x] = (pixel_t*)malloc(sizeof(pixel_t) * SCREEN_HEIGHT);
 
-	frameBuffer_final = (struct pixel_t**)malloc(sizeof(struct pixel_t *) * SCREEN_WIDTH_FINAL);
+	frameBuffer_final = (pixel_t**)malloc(sizeof(pixel_t *) * SCREEN_WIDTH_FINAL);
 
 	for(int x = 0; x < SCREEN_WIDTH_FINAL; x++) 
-		frameBuffer_final[x] = (struct pixel_t*)malloc(sizeof(struct pixel_t) * SCREEN_HEIGHT_FINAL);
+		frameBuffer_final[x] = (pixel_t*)malloc(sizeof(pixel_t) * SCREEN_HEIGHT_FINAL);
+
+	inputBuffer = NULL;
 
 	clear_frameBuffers();
 }
@@ -75,17 +79,17 @@ void set_frameBuffers_random(){
 
 	for(int x = 0; x < SCREEN_WIDTH; x++){
 		for(int y = 0; y < SCREEN_HEIGHT; y++){
-			frameBuffer[x][y].c[COLOR_R] = (byte)(rand() % 256);
-			frameBuffer[x][y].c[COLOR_G] = (byte)(rand() % 256);
-			frameBuffer[x][y].c[COLOR_B] = (byte)(rand() % 256);
+			frameBuffer[x][y].c[COLOR_R] = (byte_t)(rand() % 256);
+			frameBuffer[x][y].c[COLOR_G] = (byte_t)(rand() % 256);
+			frameBuffer[x][y].c[COLOR_B] = (byte_t)(rand() % 256);
 		}
 	}
 
 	for(int x = 0; x < SCREEN_WIDTH_FINAL; x++){
 		for(int y = 0; y < SCREEN_HEIGHT_FINAL; y++){
-			frameBuffer_final[x][y].c[COLOR_R] = (byte)(rand() % 256);
-			frameBuffer_final[x][y].c[COLOR_G] = (byte)(rand() % 256);
-			frameBuffer_final[x][y].c[COLOR_B] = (byte)(rand() % 256);
+			frameBuffer_final[x][y].c[COLOR_R] = (byte_t)(rand() % 256);
+			frameBuffer_final[x][y].c[COLOR_G] = (byte_t)(rand() % 256);
+			frameBuffer_final[x][y].c[COLOR_B] = (byte_t)(rand() % 256);
 		}
 	}
 }
@@ -100,6 +104,13 @@ void free_frameBuffers(){
 		free(frameBuffer[x]);
 	}
 	free(frameBuffer);
+
+	if(inputBuffer != NULL){
+		for(int x = 0; x < input_width; x++){
+			free(inputBuffer[x]);
+		}
+		free(inputBuffer);
+	}
 }
 
 void write_buffer(char* filename){
