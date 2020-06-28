@@ -53,11 +53,11 @@
 #define SHADE_GOURAUD 2
 #define SHADE_WIREFRAME 3
 
-typedef unsigned char byte;
-typedef double coord;
+typedef unsigned char byte_t;
+typedef double coord_t;
 
 typedef struct pixel_t {
-	byte c[4];
+	byte_t c[4];
 } pixel_t;
 
 void abort_(const char* s, ...);
