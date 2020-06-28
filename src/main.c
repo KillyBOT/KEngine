@@ -85,10 +85,10 @@ int main(){
 	color_type = PNG_COLOR_TYPE_RGBA;
 	bit_depth = 8;
 
-	int test_msaa_depth = 4;
+	int test_msaa_depth = 2;
 
-	SCREEN_WIDTH_FINAL = 640;
-	SCREEN_HEIGHT_FINAL = 480;
+	SCREEN_WIDTH_FINAL = 1280;
+	SCREEN_HEIGHT_FINAL = 720;
 
 	SCREEN_WIDTH = SCREEN_WIDTH_FINAL * (int)(log(test_msaa_depth)/log(2));
 	SCREEN_HEIGHT = SCREEN_HEIGHT_FINAL * (int)(log(test_msaa_depth)/log(2));
@@ -114,7 +114,7 @@ int main(){
 	shape_box(0,0,0,50,50,50);
 	generate_normals();
 
-	read_jpg_file("drkwood2.jpg");
+	read_jpg_file("SpiderTex.jpg");
 
 	set_frameBuffers_random();
 	msaa(test_msaa_depth);

@@ -52,16 +52,17 @@ GLOBAL(void) read_jpg_file(char *filename){
 
 	input_width = cinfo.output_width;
 	input_height = cinfo.output_height;
+	//printf("%d %d\n", input_width, input_height);
 
 	inputBuffer = (pixel_t**)malloc(sizeof(pixel_t*) * input_width);
 	for(int x = 0; x < input_width; x++)
 		inputBuffer[x] = (pixel_t*)malloc(sizeof(pixel_t) * input_height);
 
-	pData = (byte_t*)malloc(sizeof(byte_t) * input_width * input_height * 3);
+	pData = (byte_t*)malloc(input_width * input_height * 3);
 
 	while(cinfo.output_scanline < cinfo.output_height){
 
-		rowptr[0] = (byte_t*)pData + (3 * input_width * input_height);
+		rowptr[0] = (byte_t*)pData + (3 * input_width * cinfo.output_scanline);
 
 		(void) jpeg_read_scanlines(&cinfo, rowptr, 1);
 	}
