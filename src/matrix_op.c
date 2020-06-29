@@ -199,7 +199,9 @@ double matrix_det(mat_t* m){
 		matrix_free(tmp);
 	}
 }
-// void matrix_minor(mat_t* m);
+void matrix_minor(mat_t* m){
+	
+}
 // void mat_transpose(mat_t* m);
 // void matrix_adjugate(mat_t* m);
 // void matrix_inverse(mat_t* m);

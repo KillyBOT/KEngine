@@ -36,7 +36,8 @@ void generate_normals(){
 
 			free(vTemp);
 		}
-		
+
+
 		sn = vertex_surface_normal(v[0],v[1],v[2]);
 
 		for(int i = 0; i < 3; i++){

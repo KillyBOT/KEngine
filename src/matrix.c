@@ -25,12 +25,36 @@ mat_t* matrix_create(int rows, int cols){
 
 	return m;
 }
+
+void matrices_init(){
+	matrix_icd.sz = sizeof(mat_t);
+	matrix_icd.init = NULL;
+	matrix_icd.copy = NULL;
+	matrix_icd.dtor = matrix_dtor_icd;
+	utarray_new(cstack, &matrix_icd);
+
+	mat_t* cstackInit = matrix_create(4, 4);
+	matrix_ident(cstackInit);
+	utarray_push_back(cstack,cstackInit);
+
+	mPoints = matrix_create(4,1024);
+	mNormals = matrix_create(4,1024);
+	mTextures = matrix_create(4,1024);
+}
+
 void matrix_free(mat_t* m){
 	for(int r = 0; r < m->rows; r++)
 		free(m->m[r]);
 	free(m->m);
 
 	free(m);
+}
+
+void matrices_free(){
+	matrix_free(mPoints);
+	matrix_free(mNormals);
+	matrix_free(mTextures);
+	utarray_free(cstack);
 }
 
 void matrix_grow(mat_t* m, int newcols){

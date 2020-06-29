@@ -9,8 +9,8 @@
 	char string[512];
 }
 
-%token <value> VALUE
-%token <string> COMMENT STRING
+%token <value> MTL_VALUE
+%token <string> MTL_COMMENT MTL_STRING
 %token <string> NEWMTL KA KD KS NS D TR NI ILLUM
 %token <string> MAP_KA MAP_KD MAP_KS MAP_NS MAP_D BUMP DISP DECAL REFL
 %token <string> _BLENDU _BLENDV _BOOST _MM _GAIN_VALUE _O _S _T _TEXRES _CLAMP _BM _IMFCHAN _TYPE
@@ -23,7 +23,7 @@ input:
 
 command:
 
-COMMENT 
+MTL_COMMENT 
 {}
 |
 
@@ -81,55 +81,55 @@ ILLUM val
 }
 |
 
-MAP_KA argument STRING
+MAP_KA argument str
 {
 	printf("Specifying ambient texture\n\n");
 }
 |
 
-MAP_KD argument STRING
+MAP_KD argument str
 {
 	printf("Specifying diffuse texture\n\n");
 }
 |
 
-MAP_KS argument STRING
+MAP_KS argument str
 {
 	printf("Specifying specular texture\n\n");
 }
 |
 
-MAP_NS argument STRING
+MAP_NS argument str
 {
 	printf("Specifying specular highlight component\n\n");
 }
 |
 
-MAP_D argument STRING
+MAP_D argument str
 {
 	printf("Specifying alpha texture\n\n");
 }
 |
 
-BUMP argument STRING
+BUMP argument str
 {
 	printf("Specifying bump map\n\n");
 }
 |
 
-DISP argument STRING
+DISP argument str
 {
 	printf("Specifying displacement map\n\n");
 }
 |
 
-DECAL argument STRING
+DECAL argument str
 {
 	printf("Specifying decal texture\n\n");
 }
 |
 
-REFL argument STRING
+REFL argument str
 {
 	printf("Specifying reflection map\n\n");
 }
@@ -241,35 +241,24 @@ _type: _TYPE str {
 }
 ;
 
-str: STRING
+str: MTL_STRING
 {
 	printf("String value: [%s]\n",$1);
 }
 ;
 
-val: VALUE
+val: MTL_VALUE
 {
 	printf("Double value: [%.3lf]\n",$1);
 };	
 
 %%
 
-extern FILE* yyin;
-
-int yyerror(char *s){
+int mtl_yyerror(char *s){
 	fprintf(stderr, "YYERROR: %s\n\n",s);
 	return 0;
 }
 
-int yywrap(){
+int mtl_yywrap(){
 	return 1;
-}
-
-int main(int argc, char** argv){
-
-	yyin = fopen(argv[1], "r");
-
-	yyparse();
-
-	return 0;
 }

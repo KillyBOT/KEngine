@@ -6,6 +6,7 @@
 #include "matrix.h"
 #include "vertex.h"
 #include "shape.h"
+#include "uthash.h"
 
 extern mat_t* mPoints;
 extern mat_t* mNormals;
@@ -98,4 +99,5 @@ void shape_box(double x, double y, double z, double w, double h, double d){
 	free(v6);
 	free(v7);
 	free(v8);
+
 }

@@ -4,7 +4,7 @@
 #include <jpeglib.h>
 
 #include "KEngine.h"
-#include "draw.h"
+#include "parse.h"
 
 extern int SCREEN_HEIGHT_FINAL;
 extern int SCREEN_WIDTH_FINAL;
@@ -51,7 +51,7 @@ GLOBAL(void) write_jpg_file(char* filename){
 	}
 
 	jpeg_finish_compress(&cinfo);
-	
+
 	fclose(f);
 
 	jpeg_destroy_compress(&cinfo);

@@ -23,14 +23,26 @@
 #include "process.h"
 #include "draw.h"
 
+#include "obj.tab.h"
+#include "mtl.tab.h"
+
+
+
+extern FILE* mtl_yyin;
+extern FILE* obj_yyin;
+
 
 
 extern int SCREEN_WIDTH;
 extern int SCREEN_HEIGHT;
-extern int SCREEN_WIDTH_FINAL;
-extern int SCREEN_HEIGHT_FINAL;
 extern int input_width;
 extern int input_height;
+
+
+
+extern int MSAA_DEPTH;
+extern int MSAA_DEPTH_LOG;
+extern int MSAA_ENABLED;
 
 
 
@@ -49,16 +61,6 @@ extern UT_array* fQueue;
 
 extern UT_icd polygon_icd;
 extern UT_icd fragment_icd;
-
-
-
-extern png_structp png_ptr;
-extern png_infop info_ptr;
-
-extern png_byte color_type;
-extern png_byte bit_depth;
-
-extern png_bytep* row_pointers;
 
 
 
@@ -82,52 +84,43 @@ int main(){
 	pQueue = NULL;
 	fQueue = NULL;
 
-	color_type = PNG_COLOR_TYPE_RGBA;
-	bit_depth = 8;
+	SCREEN_WIDTH = 1280;
+	SCREEN_HEIGHT = 720;
+	MSAA_ENABLED = 0;
 
-	int test_msaa_depth = 2;
+	if(MSAA_ENABLED){
+		MSAA_DEPTH = 8;
+		MSAA_DEPTH_LOG = (int)(log(MSAA_DEPTH)/log(2));
 
-	SCREEN_WIDTH_FINAL = 1280;
-	SCREEN_HEIGHT_FINAL = 720;
+		SCREEN_WIDTH *= MSAA_DEPTH_LOG;
+		SCREEN_HEIGHT *= MSAA_DEPTH_LOG;
+	}
 
-	SCREEN_WIDTH = SCREEN_WIDTH_FINAL * (int)(log(test_msaa_depth)/log(2));
-	SCREEN_HEIGHT = SCREEN_HEIGHT_FINAL * (int)(log(test_msaa_depth)/log(2));
-
-	init_frameBuffers();
-
-	matrix_icd.sz = sizeof(mat_t);
-	matrix_icd.init = NULL;
-	matrix_icd.copy = NULL;
-	matrix_icd.dtor = matrix_dtor_icd;
-	utarray_new(cstack, &matrix_icd);
-
-	mat_t* cstackInit = matrix_create(4, 4);
-	matrix_ident(cstackInit);
-	utarray_push_back(cstack,cstackInit);
-
-	mPoints = matrix_create(4,1024);
-	mNormals = matrix_create(4,1024);
-	mTextures = matrix_create(4,1024);
+	init_frameBuffer();
+	matrices_init();
 
 	printf("General structures initialized\n");
 
 	shape_box(0,0,0,50,50,50);
 	generate_normals();
 
-	read_jpg_file("SpiderTex.jpg");
+	//read_jpg_file("SpiderTex.jpg");
 
-	set_frameBuffers_random();
-	msaa(test_msaa_depth);
+	set_frameBuffer_random();
+	if(MSAA_ENABLED)msaa();
 
-	write_buffer("test.png");
+	printf("Drawing picture...\n");
+	write_png_file("test.png");
 
 	printf("Freeing structures\n");
 
-	free_frameBuffers();
-	matrix_free(mPoints);
-	matrix_free(mNormals);
-	matrix_free(mTextures);
-	utarray_free(cstack);
+	free_frameBuffer();
+	matrices_free();
+
+	//mtl_yyin = fopen("../wavefront/spider.mtl","r");
+
+	//mtl_yyparse();
+
 
 	return 0;
 }

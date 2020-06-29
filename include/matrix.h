@@ -14,8 +14,10 @@ typedef struct {
 
 //Matrix general functions
 mat_t* matrix_create(int rows, int cols);
+void matrices_init();
 void matrix_init_icd(void *_elt);
 void matrix_free(mat_t* m);
+void matrices_free();
 void matrix_grow(mat_t* m, int newcols);
 void matrix_copy(mat_t* dest, mat_t* src);
 void matrix_copy_icd(void *_dst, const void *_src);

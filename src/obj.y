@@ -10,9 +10,9 @@
 }
 
 %token <string> VERTEX TCOORD NORMAL POLYGON NAME OBJECT_DECLARATION SMOOTH_SHADING MTLLIB USEMTL 
-%token <string> STRING SLASH
-%token <value> VALUE
-%token COMMENT
+%token <string> OBJ_STRING SLASH
+%token <value> OBJ_VALUE
+%token OBJ_COMMENT
 
 %%
 
@@ -28,6 +28,11 @@ MTLLIB str
 }|
 
 OBJECT_DECLARATION str
+{
+	printf("This declares an object\n");
+}|
+
+OBJECT_DECLARATION val
 {
 	printf("This declares an object\n");
 }|
@@ -67,7 +72,7 @@ POLYGON triangle
 	printf("This is a triangle polygon\n");
 }|
 
-COMMENT
+OBJ_COMMENT
 {
 	printf("This is a comment\n");
 }
@@ -100,34 +105,24 @@ vn: val SLASH SLASH val
 vtn: val SLASH val SLASH val
 ;
 
-str: STRING
+str: OBJ_STRING
 {
 	printf("String value: [%s]\n",$1);
 }
 ;
 
-val: VALUE
+val: OBJ_VALUE
 {
 	printf("Double or location value: [%.3lf]\n",$1);
 };
 
 %%
 
-int yyerror(char *s){
+int obj_yyerror(char *s){
 	fprintf(stderr,"YYERROR: %s\n",s);
 	return 0;
 }
 
-int yywrap(){
+int obj_yywrap(){
 	return 1;
-}
-
-extern FILE *yyin;
-
-int main(int argc, char** argv){
-	yyin = fopen(argv[1],"r");
-
-	yyparse();
-	
-	return 0;
 }
