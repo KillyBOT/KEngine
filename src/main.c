@@ -84,8 +84,8 @@ int main(){
 	pQueue = NULL;
 	fQueue = NULL;
 
-	SCREEN_WIDTH = 1280;
-	SCREEN_HEIGHT = 720;
+	SCREEN_WIDTH = 640;
+	SCREEN_HEIGHT = 480;
 	MSAA_ENABLED = 0;
 
 	if(MSAA_ENABLED){
