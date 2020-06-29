@@ -2,6 +2,27 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "KEngine.h"
+#include "material.h"
+#include "vertex.h"
+#include "matrix.h"
+#include "parse.h"
+
+#include "mtl.tab.h"
+
+extern mat_t* mPoints;
+extern mat_t* mTextures;
+extern mat_t* mNormals;
+
+extern mtl_t* gMaterials;
+
+extern FILE* mtl_yyin;
+
+int currentMatID = 0;
+Vec4_t vTemp;
+char finalName[512];
+
 %}
 
 %union{
@@ -9,7 +30,7 @@
 	char string[512];
 }
 
-%token <string> VERTEX TCOORD NORMAL POLYGON NAME OBJECT_DECLARATION SMOOTH_SHADING MTLLIB USEMTL 
+%token <string> VERTEX TCOORD NORMAL POLYGON NAME OBJECT_DECLARATION OBJECT_GROUP SMOOTH_SHADING MTLLIB USEMTL 
 %token <string> OBJ_STRING SLASH
 %token <value> OBJ_VALUE
 %token OBJ_COMMENT
@@ -22,39 +43,58 @@ input:
 
 command:
 
-MTLLIB str
+MTLLIB OBJ_STRING
 {
 	printf("This specifies the mtl file\n");
+	strcpy(finalName,"../wavefront/");
+	strcat(finalName,$2);
+	mtl_yyin = fopen(finalName, "r");
+	mtl_yyparse();
 }|
 
 OBJECT_DECLARATION str
 {
-	printf("This declares an object\n");
+	//printf("This declares an object\n");
 }|
 
 OBJECT_DECLARATION val
 {
-	printf("This declares an object\n");
+	//printf("This declares an object\n");
+}|
+
+OBJECT_GROUP str
+{
+
+}|
+
+OBJECT_GROUP val
+{
+
 }|
 
 VERTEX coords
 {
 	printf("This is a vertex definition\n");
+	matrix_add_point(mPoints,&vTemp);
+
 }|
 
 NORMAL coords
 {
 	printf("This is a normal definition\n");
+	matrix_add_point(mNormals,&vTemp);
 }|
 
 TCOORD coords
 {
 	printf("This is a texture coordinate definition\n");
+	matrix_add_point(mNormals,&vTemp);
 }|
 
-USEMTL str
+USEMTL OBJ_STRING
 {
 	printf("This specifies the mtl file\n");
+	currentMatID = material_find($2);
 }|
 
 SMOOTH_SHADING val
@@ -78,9 +118,27 @@ OBJ_COMMENT
 }
 ;
 
-coords: val val val val
-|	val val val
-|	val val
+coords: OBJ_VALUE OBJ_VALUE OBJ_VALUE OBJ_VALUE
+{
+	vTemp.v[0] = $1;
+	vTemp.v[1] = $2;
+	vTemp.v[2] = $3;
+	vTemp.v[3] = $4;
+}
+|	OBJ_VALUE OBJ_VALUE OBJ_VALUE
+{
+	vTemp.v[0] = $1;
+	vTemp.v[1] = $2;
+	vTemp.v[2] = $3;
+	vTemp.v[3] = 1;
+}
+|	OBJ_VALUE OBJ_VALUE
+{
+	vTemp.v[0] = $1;
+	vTemp.v[1] = $2;
+	vTemp.v[2] = (double)currentMatID;
+	vTemp.v[3] = 1;
+}
 ;
 
 rectangle: vtn vtn vtn vtn

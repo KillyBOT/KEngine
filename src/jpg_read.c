@@ -6,9 +6,6 @@
 #include "KEngine.h"
 #include "parse.h"
 
-extern int SCREEN_HEIGHT_FINAL;
-extern int SCREEN_WIDTH_FINAL;
-
 extern pixel_t ** inputBuffer;
 extern int input_width;
 extern int input_height;

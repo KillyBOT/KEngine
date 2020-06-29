@@ -76,7 +76,18 @@
 #include <stdlib.h>
 #include <string.h>
 
-#line 80 "mtl.tab.c" /* yacc.c:339  */
+#include "KEngine.h"
+#include "material.h"
+#include "texture.h"
+
+extern mtl_t* gMaterials;
+extern mtlID_t* gMaterialsID;
+extern tex_t* gTextures;
+
+mtl_t* currentMat;
+tex_t* currentTex;
+
+#line 91 "mtl.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -153,12 +164,12 @@ extern int mtl_yydebug;
 
 union YYSTYPE
 {
-#line 7 "mtl.y" /* yacc.c:355  */
+#line 18 "mtl.y" /* yacc.c:355  */
 
 	double value;
 	char string[512];
 
-#line 162 "mtl.tab.c" /* yacc.c:355  */
+#line 173 "mtl.tab.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -175,7 +186,7 @@ int mtl_yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 179 "mtl.tab.c" /* yacc.c:358  */
+#line 190 "mtl.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -417,7 +428,7 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  2
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   160
+#define YYLAST   98
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  37
@@ -474,14 +485,14 @@ static const yytype_uint8 yytranslate[] =
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
-static const yytype_uint8 yyrline[] =
+static const yytype_uint16 yyrline[] =
 {
-       0,    20,    20,    21,    26,    30,    36,    42,    48,    54,
-      60,    66,    72,    78,    84,    90,    96,   102,   108,   114,
-     120,   126,   132,   138,   142,   147,   148,   149,   150,   151,
-     152,   153,   154,   155,   156,   157,   158,   159,   162,   168,
-     174,   180,   186,   189,   192,   197,   200,   203,   208,   211,
-     214,   219,   224,   229,   234,   239,   244,   250
+       0,    31,    31,    32,    37,    41,    49,    59,    68,    77,
+      84,    91,    98,   105,   112,   121,   130,   139,   148,   157,
+     166,   175,   184,   193,   197,   202,   203,   204,   205,   206,
+     207,   208,   209,   210,   211,   212,   213,   214,   217,   223,
+     229,   235,   241,   244,   247,   252,   255,   258,   263,   266,
+     269,   274,   279,   284,   289,   294,   299,   305
 };
 #endif
 
@@ -512,10 +523,10 @@ static const yytype_uint16 yytoknum[] =
 };
 # endif
 
-#define YYPACT_NINF -8
+#define YYPACT_NINF -39
 
 #define yypact_value_is_default(Yystate) \
-  (!!((Yystate) == (-8)))
+  (!!((Yystate) == (-39)))
 
 #define YYTABLE_NINF -1
 
@@ -526,18 +537,18 @@ static const yytype_uint16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      -8,   123,    -8,    -8,    -8,    -8,     3,     6,     6,     6,
-       6,     6,     6,     6,     6,   124,   124,   124,   124,   124,
-     124,   124,   124,   124,    -8,    -8,    -8,    -8,     6,     6,
-       6,    -8,    -8,    -8,    -8,    -8,     3,     3,     6,     6,
-       6,     6,     6,     6,     3,     6,     3,     3,     3,   124,
-     124,   124,   124,   124,   124,   124,   124,   124,   124,    -8,
-      -8,     3,     3,     3,     3,     3,     3,     3,     3,     6,
-       6,     6,    -8,    -8,    -8,     6,     6,     6,     6,    -8,
-      -8,    -8,    -8,    -8,    -8,    -8,    -8,    -8,    -8,    -8,
-      -8,    -8,    -8,    -8,    -8,    -8,    -8,    -8,    -8,    -8,
-      -8,    -8,    -8,    -8,    -8,    -8,    -8,     6,     6,     6,
-      -8,    -8,    -8
+     -39,    72,   -39,   -39,   -39,   -39,     1,    13,    18,    27,
+      28,    29,    30,    31,    32,    -7,    -7,    -7,    -7,    -7,
+      -7,    -7,    -7,    -7,   -39,   -39,   -39,   -39,    33,    50,
+      51,   -39,   -39,   -39,   -39,   -39,    52,    52,    53,    53,
+      53,    53,    53,    53,    52,    53,    52,    52,    55,    -7,
+      -7,    -7,    -7,    -7,    -7,    -7,    -7,    -7,    -7,   -39,
+     -39,    58,    59,    60,    61,    62,    63,    68,    69,    93,
+      94,    95,   -39,   -39,   -39,    53,    53,    53,    53,   -39,
+     -39,   -39,   -39,   -39,   -39,   -39,   -39,   -39,   -39,   -39,
+     -39,   -39,   -39,   -39,   -39,   -39,   -39,   -39,   -39,   -39,
+     -39,   -39,   -39,   -39,   -39,   -39,   -39,    53,    53,    53,
+     -39,   -39,   -39
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -562,8 +573,8 @@ static const yytype_uint8 yydefact[] =
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-      -8,    -8,    -8,    64,    -8,    -8,    -8,    -8,    -8,    -8,
-      -8,    -8,    -8,    -8,    -8,    -8,    11,    -7
+     -39,   -39,   -39,    -8,   -39,   -39,   -39,   -39,   -39,   -39,
+     -39,   -39,   -39,   -39,   -39,   -39,    15,   -38
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
@@ -578,44 +589,30 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_uint8 yytable[] =
 {
-      28,    29,    30,    31,    32,    33,    34,    35,     5,     3,
-       0,     0,     0,     0,     0,     0,     0,    27,     0,     0,
-       0,    69,    70,    71,     0,     0,     0,     0,     0,     0,
-       0,    74,    75,    76,    77,    78,    79,     0,    81,     0,
-       0,     0,     0,     0,     0,     0,     0,    72,    73,     0,
-       0,     0,     0,     0,     0,    80,     0,    82,    83,    84,
-       0,     0,   103,   104,   105,     0,     0,     0,   106,   107,
-     108,   109,    95,    96,    97,    98,    99,   100,   101,   102,
-      61,    62,    63,    64,    65,    66,    67,    68,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-     110,   111,   112,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,    85,    86,    87,    88,    89,    90,    91,
-      92,    93,    94,     2,     0,     0,     3,     4,     5,     6,
-       7,     8,     9,    10,    11,    12,    13,    14,    15,    16,
-      17,    18,    19,    20,    21,    22,    23,     0,    36,    37,
-      38,    39,     0,    40,    41,    42,    43,    44,    45,    46,
-      47
+      74,    75,    76,    77,    78,    79,    27,    81,    61,    62,
+      63,    64,    65,    66,    67,    68,    28,    36,    37,    38,
+      39,    29,    40,    41,    42,    43,    44,    45,    46,    47,
+      30,    31,    32,    33,    34,    35,    69,   106,   107,   108,
+     109,    85,    86,    87,    88,    89,    90,    91,    92,    93,
+      94,    72,    73,    70,    71,     0,     3,     5,     0,    80,
+      84,    82,    83,    95,    96,    97,    98,    99,   100,   110,
+     111,   112,     2,   101,   102,     3,     4,     5,     6,     7,
+       8,     9,    10,    11,    12,    13,    14,    15,    16,    17,
+      18,    19,    20,    21,    22,    23,   103,   104,   105
 };
 
 static const yytype_int8 yycheck[] =
 {
-       7,     8,     9,    10,    11,    12,    13,    14,     5,     3,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,     6,    -1,    -1,
-      -1,    28,    29,    30,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    38,    39,    40,    41,    42,    43,    -1,    45,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    36,    37,    -1,
-      -1,    -1,    -1,    -1,    -1,    44,    -1,    46,    47,    48,
-      -1,    -1,    69,    70,    71,    -1,    -1,    -1,    75,    76,
-      77,    78,    61,    62,    63,    64,    65,    66,    67,    68,
-      16,    17,    18,    19,    20,    21,    22,    23,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-     107,   108,   109,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    49,    50,    51,    52,    53,    54,    55,
-      56,    57,    58,     0,    -1,    -1,     3,     4,     5,     6,
-       7,     8,     9,    10,    11,    12,    13,    14,    15,    16,
-      17,    18,    19,    20,    21,    22,    23,    -1,    24,    25,
-      26,    27,    -1,    29,    30,    31,    32,    33,    34,    35,
-      36
+      38,    39,    40,    41,    42,    43,     5,    45,    16,    17,
+      18,    19,    20,    21,    22,    23,     3,    24,    25,    26,
+      27,     3,    29,    30,    31,    32,    33,    34,    35,    36,
+       3,     3,     3,     3,     3,     3,     3,    75,    76,    77,
+      78,    49,    50,    51,    52,    53,    54,    55,    56,    57,
+      58,    36,    37,     3,     3,    -1,     3,     5,    -1,    44,
+       5,    46,    47,     5,     5,     5,     5,     5,     5,   107,
+     108,   109,     0,     5,     5,     3,     4,     5,     6,     7,
+       8,     9,    10,    11,    12,    13,    14,    15,    16,    17,
+      18,    19,    20,    21,    22,    23,     3,     3,     3
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
@@ -624,15 +621,15 @@ static const yytype_uint8 yystos[] =
 {
        0,    38,     0,     3,     4,     5,     6,     7,     8,     9,
       10,    11,    12,    13,    14,    15,    16,    17,    18,    19,
-      20,    21,    22,    23,    39,    53,    54,    53,    54,    54,
-      54,    54,    54,    54,    54,    54,    24,    25,    26,    27,
+      20,    21,    22,    23,    39,    53,    54,     5,     3,     3,
+       3,     3,     3,     3,     3,     3,    24,    25,    26,    27,
       29,    30,    31,    32,    33,    34,    35,    36,    40,    41,
       42,    43,    44,    45,    46,    47,    48,    49,    50,    51,
-      52,    40,    40,    40,    40,    40,    40,    40,    40,    54,
-      54,    54,    53,    53,    54,    54,    54,    54,    54,    54,
-      53,    54,    53,    53,    53,    40,    40,    40,    40,    40,
-      40,    40,    40,    40,    40,    53,    53,    53,    53,    53,
-      53,    53,    53,    54,    54,    54,    54,    54,    54,    54,
+      52,    40,    40,    40,    40,    40,    40,    40,    40,     3,
+       3,     3,    53,    53,    54,    54,    54,    54,    54,    54,
+      53,    54,    53,    53,     5,    40,    40,    40,    40,    40,
+      40,    40,    40,    40,    40,     5,     5,     5,     5,     5,
+       5,     5,     5,     3,     3,     3,    54,    54,    54,    54,
       54,    54,    54
 };
 
@@ -1332,329 +1329,373 @@ yyreduce:
   switch (yyn)
     {
         case 4:
-#line 27 "mtl.y" /* yacc.c:1646  */
+#line 38 "mtl.y" /* yacc.c:1646  */
     {}
-#line 1338 "mtl.tab.c" /* yacc.c:1646  */
+#line 1335 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 5:
-#line 31 "mtl.y" /* yacc.c:1646  */
+#line 42 "mtl.y" /* yacc.c:1646  */
     {
 	printf("Specifying a new material\n\n");
+	material_add((yyvsp[0].string));
+	currentMat = material_find((yyvsp[0].string));
 }
-#line 1346 "mtl.tab.c" /* yacc.c:1646  */
+#line 1345 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 37 "mtl.y" /* yacc.c:1646  */
+#line 50 "mtl.y" /* yacc.c:1646  */
     {
 	printf("Specifying ambient reflection constants\n\n");
+	currentMat->ka[COLOR_R] = (yyvsp[-2].value);
+	currentMat->ka[COLOR_G] = (yyvsp[-1].value);
+	currentMat->ka[COLOR_B] = (yyvsp[0].value);
+
 }
-#line 1354 "mtl.tab.c" /* yacc.c:1646  */
+#line 1357 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 43 "mtl.y" /* yacc.c:1646  */
+#line 60 "mtl.y" /* yacc.c:1646  */
     {
 	printf("Specifying diffuse reflection constants\n\n");
+	currentMat->kd[COLOR_R] = (yyvsp[-2].value);
+	currentMat->kd[COLOR_G] = (yyvsp[-1].value);
+	currentMat->kd[COLOR_B] = (yyvsp[0].value);
 }
-#line 1362 "mtl.tab.c" /* yacc.c:1646  */
+#line 1368 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 49 "mtl.y" /* yacc.c:1646  */
+#line 69 "mtl.y" /* yacc.c:1646  */
     {
 	printf("Specifying specular reflection constants\n\n");
+	currentMat->ks[COLOR_R] = (yyvsp[-2].value);
+	currentMat->ks[COLOR_G] = (yyvsp[-1].value);
+	currentMat->ks[COLOR_B] = (yyvsp[0].value);
 }
-#line 1370 "mtl.tab.c" /* yacc.c:1646  */
+#line 1379 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 55 "mtl.y" /* yacc.c:1646  */
+#line 78 "mtl.y" /* yacc.c:1646  */
     {
 	printf("Specifying specular exponent\n\n");
+	currentMat->ns = (yyvsp[0].value);
 }
-#line 1378 "mtl.tab.c" /* yacc.c:1646  */
+#line 1388 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 61 "mtl.y" /* yacc.c:1646  */
+#line 85 "mtl.y" /* yacc.c:1646  */
     {
 	printf("Specifying opaqueness\n\n");
+	currentMat->d = (yyvsp[0].value);
 }
-#line 1386 "mtl.tab.c" /* yacc.c:1646  */
+#line 1397 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 11:
-#line 67 "mtl.y" /* yacc.c:1646  */
+#line 92 "mtl.y" /* yacc.c:1646  */
     {
 	printf("Specifying transparency\n\n");
+	currentMat->d = 1 - (yyvsp[0].value);
 }
-#line 1394 "mtl.tab.c" /* yacc.c:1646  */
+#line 1406 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 73 "mtl.y" /* yacc.c:1646  */
+#line 99 "mtl.y" /* yacc.c:1646  */
     {
 	printf("Specifying optical density\n\n");
+	currentMat->ni = (yyvsp[0].value);
 }
-#line 1402 "mtl.tab.c" /* yacc.c:1646  */
+#line 1415 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 79 "mtl.y" /* yacc.c:1646  */
+#line 106 "mtl.y" /* yacc.c:1646  */
     {
 	printf("Specifying illumination model\n\n");
+	currentMat->iModel = (int)(yyvsp[0].value);
 }
-#line 1410 "mtl.tab.c" /* yacc.c:1646  */
+#line 1424 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 85 "mtl.y" /* yacc.c:1646  */
+#line 113 "mtl.y" /* yacc.c:1646  */
     {
-	printf("Specifying ambient texture\n\n");
+	printf("Specifying ambient texture [%s]\n\n",(yyvsp[0].string));
+	texture_add((yyvsp[0].string));
+	currentTex = texture_find((yyvsp[0].string));
+	currentMat->map_ka = currentTex;
 }
-#line 1418 "mtl.tab.c" /* yacc.c:1646  */
+#line 1435 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 91 "mtl.y" /* yacc.c:1646  */
+#line 122 "mtl.y" /* yacc.c:1646  */
     {
-	printf("Specifying diffuse texture\n\n");
+	printf("Specifying diffuse texture [%s]\n\n",(yyvsp[0].string));
+	texture_add((yyvsp[0].string));
+	currentTex = texture_find((yyvsp[0].string));
+	currentMat->map_kd = currentTex;
 }
-#line 1426 "mtl.tab.c" /* yacc.c:1646  */
+#line 1446 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 97 "mtl.y" /* yacc.c:1646  */
+#line 131 "mtl.y" /* yacc.c:1646  */
     {
 	printf("Specifying specular texture\n\n");
+	texture_add((yyvsp[0].string));
+	currentTex = texture_find((yyvsp[0].string));
+	currentMat->map_ks = currentTex;
 }
-#line 1434 "mtl.tab.c" /* yacc.c:1646  */
+#line 1457 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 103 "mtl.y" /* yacc.c:1646  */
+#line 140 "mtl.y" /* yacc.c:1646  */
     {
 	printf("Specifying specular highlight component\n\n");
+	texture_add((yyvsp[0].string));
+	currentTex = texture_find((yyvsp[0].string));
+	currentMat->map_ns = currentTex;
 }
-#line 1442 "mtl.tab.c" /* yacc.c:1646  */
+#line 1468 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 109 "mtl.y" /* yacc.c:1646  */
+#line 149 "mtl.y" /* yacc.c:1646  */
     {
 	printf("Specifying alpha texture\n\n");
+	texture_add((yyvsp[0].string));
+	currentTex = texture_find((yyvsp[0].string));
+	currentMat->map_d = currentTex;
 }
-#line 1450 "mtl.tab.c" /* yacc.c:1646  */
+#line 1479 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 115 "mtl.y" /* yacc.c:1646  */
+#line 158 "mtl.y" /* yacc.c:1646  */
     {
 	printf("Specifying bump map\n\n");
+	texture_add((yyvsp[0].string));
+	currentTex = texture_find((yyvsp[0].string));
+	currentMat->map_bump = currentTex;
 }
-#line 1458 "mtl.tab.c" /* yacc.c:1646  */
+#line 1490 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 121 "mtl.y" /* yacc.c:1646  */
+#line 167 "mtl.y" /* yacc.c:1646  */
     {
 	printf("Specifying displacement map\n\n");
+	texture_add((yyvsp[0].string));
+	currentTex = texture_find((yyvsp[0].string));
+	currentMat->map_disp = currentTex;
 }
-#line 1466 "mtl.tab.c" /* yacc.c:1646  */
+#line 1501 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 127 "mtl.y" /* yacc.c:1646  */
+#line 176 "mtl.y" /* yacc.c:1646  */
     {
 	printf("Specifying decal texture\n\n");
+	texture_add((yyvsp[0].string));
+	currentTex = texture_find((yyvsp[0].string));
+	currentMat->map_decal = currentTex;
 }
-#line 1474 "mtl.tab.c" /* yacc.c:1646  */
+#line 1512 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 133 "mtl.y" /* yacc.c:1646  */
+#line 185 "mtl.y" /* yacc.c:1646  */
     {
 	printf("Specifying reflection map\n\n");
+	texture_add((yyvsp[0].string));
+	currentTex = texture_find((yyvsp[0].string));
+	currentMat->map_refl = currentTex;
 }
-#line 1482 "mtl.tab.c" /* yacc.c:1646  */
+#line 1523 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 139 "mtl.y" /* yacc.c:1646  */
+#line 194 "mtl.y" /* yacc.c:1646  */
     {}
-#line 1488 "mtl.tab.c" /* yacc.c:1646  */
+#line 1529 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 143 "mtl.y" /* yacc.c:1646  */
+#line 198 "mtl.y" /* yacc.c:1646  */
     {}
-#line 1494 "mtl.tab.c" /* yacc.c:1646  */
+#line 1535 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 38:
-#line 163 "mtl.y" /* yacc.c:1646  */
+#line 218 "mtl.y" /* yacc.c:1646  */
     {
 	printf("Specifying horizontal texture blending (default on)\n\n");
 }
-#line 1502 "mtl.tab.c" /* yacc.c:1646  */
+#line 1543 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 39:
-#line 169 "mtl.y" /* yacc.c:1646  */
+#line 224 "mtl.y" /* yacc.c:1646  */
     {
 	printf("Specifying vertical texture blending (default on)\n\n");
 }
-#line 1510 "mtl.tab.c" /* yacc.c:1646  */
+#line 1551 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 40:
-#line 175 "mtl.y" /* yacc.c:1646  */
+#line 230 "mtl.y" /* yacc.c:1646  */
     {
 	printf("Modifying mip-map sharpness\n\n");
 }
-#line 1518 "mtl.tab.c" /* yacc.c:1646  */
+#line 1559 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 41:
-#line 181 "mtl.y" /* yacc.c:1646  */
+#line 236 "mtl.y" /* yacc.c:1646  */
     {
 	printf("Modifying texture map values (default 0 1)\n\n");
 }
-#line 1526 "mtl.tab.c" /* yacc.c:1646  */
+#line 1567 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 42:
-#line 186 "mtl.y" /* yacc.c:1646  */
+#line 241 "mtl.y" /* yacc.c:1646  */
     {
 	printf("Specifying origin offset\n\n");
 }
-#line 1534 "mtl.tab.c" /* yacc.c:1646  */
+#line 1575 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 43:
-#line 189 "mtl.y" /* yacc.c:1646  */
+#line 244 "mtl.y" /* yacc.c:1646  */
     {
 	printf("Specifying origin offset\n\n");
 }
-#line 1542 "mtl.tab.c" /* yacc.c:1646  */
+#line 1583 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 44:
-#line 192 "mtl.y" /* yacc.c:1646  */
+#line 247 "mtl.y" /* yacc.c:1646  */
     {
 	printf("Specifying origin offset\n\n");
 }
-#line 1550 "mtl.tab.c" /* yacc.c:1646  */
+#line 1591 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 45:
-#line 197 "mtl.y" /* yacc.c:1646  */
+#line 252 "mtl.y" /* yacc.c:1646  */
     {
 	printf("Specifying scale\n\n");
 }
-#line 1558 "mtl.tab.c" /* yacc.c:1646  */
+#line 1599 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 46:
-#line 200 "mtl.y" /* yacc.c:1646  */
+#line 255 "mtl.y" /* yacc.c:1646  */
     {
 	printf("Specifying scale\n\n");
 }
-#line 1566 "mtl.tab.c" /* yacc.c:1646  */
+#line 1607 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 47:
-#line 203 "mtl.y" /* yacc.c:1646  */
+#line 258 "mtl.y" /* yacc.c:1646  */
     {
 	printf("Specifying scale\n\n");
 }
-#line 1574 "mtl.tab.c" /* yacc.c:1646  */
+#line 1615 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 48:
-#line 208 "mtl.y" /* yacc.c:1646  */
+#line 263 "mtl.y" /* yacc.c:1646  */
     {
 	printf("Specifying texture turbulence\n\n");
 }
-#line 1582 "mtl.tab.c" /* yacc.c:1646  */
+#line 1623 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 49:
-#line 211 "mtl.y" /* yacc.c:1646  */
+#line 266 "mtl.y" /* yacc.c:1646  */
     {
 	printf("Specifying texture turbulence\n\n");
 }
-#line 1590 "mtl.tab.c" /* yacc.c:1646  */
+#line 1631 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 50:
-#line 214 "mtl.y" /* yacc.c:1646  */
+#line 269 "mtl.y" /* yacc.c:1646  */
     {
 	printf("Specifying texture turbulence\n\n");
 }
-#line 1598 "mtl.tab.c" /* yacc.c:1646  */
+#line 1639 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 51:
-#line 219 "mtl.y" /* yacc.c:1646  */
+#line 274 "mtl.y" /* yacc.c:1646  */
     {
 	printf("Specifying texture resolution to create\n\n");
 }
-#line 1606 "mtl.tab.c" /* yacc.c:1646  */
+#line 1647 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 52:
-#line 224 "mtl.y" /* yacc.c:1646  */
+#line 279 "mtl.y" /* yacc.c:1646  */
     {
 	printf("Specifying clamp; can texture coords go past 0-1 (default off)\n\n");
 }
-#line 1614 "mtl.tab.c" /* yacc.c:1646  */
+#line 1655 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 53:
-#line 229 "mtl.y" /* yacc.c:1646  */
+#line 284 "mtl.y" /* yacc.c:1646  */
     {
 	printf("Specifying bump multiplier (should only be used with bump maps)\n\n");
 }
-#line 1622 "mtl.tab.c" /* yacc.c:1646  */
+#line 1663 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 54:
-#line 234 "mtl.y" /* yacc.c:1646  */
+#line 289 "mtl.y" /* yacc.c:1646  */
     {
 	printf("Specifying which channel is used to create the scalar or bump texture\n\n");
 }
-#line 1630 "mtl.tab.c" /* yacc.c:1646  */
+#line 1671 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 55:
-#line 239 "mtl.y" /* yacc.c:1646  */
+#line 294 "mtl.y" /* yacc.c:1646  */
     {
 	printf("Specifying which reflection model to use");
 }
-#line 1638 "mtl.tab.c" /* yacc.c:1646  */
+#line 1679 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 56:
-#line 245 "mtl.y" /* yacc.c:1646  */
+#line 300 "mtl.y" /* yacc.c:1646  */
     {
 	printf("String value: [%s]\n",(yyvsp[0].string));
 }
-#line 1646 "mtl.tab.c" /* yacc.c:1646  */
+#line 1687 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
   case 57:
-#line 251 "mtl.y" /* yacc.c:1646  */
+#line 306 "mtl.y" /* yacc.c:1646  */
     {
 	printf("Double value: [%.3lf]\n",(yyvsp[0].value));
 }
-#line 1654 "mtl.tab.c" /* yacc.c:1646  */
+#line 1695 "mtl.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1658 "mtl.tab.c" /* yacc.c:1646  */
+#line 1699 "mtl.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1882,7 +1923,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 255 "mtl.y" /* yacc.c:1906  */
+#line 310 "mtl.y" /* yacc.c:1906  */
 
 
 int mtl_yyerror(char *s){

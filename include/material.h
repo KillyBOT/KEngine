@@ -7,7 +7,10 @@
 
 typedef struct {
 	char *name;
-	double k[3][3];// Ambient, diffuse, and specular components
+	int id;
+	double ka[3];// Ambient constants
+	double kd[3];// Diffuse constants
+	double ks[3];// Reflect constants
 	double ns; //Specular exponent
 	double d; //Also maybe Tr
 	double ni; //Optical density
@@ -18,6 +21,9 @@ typedef struct {
 	tex_t *map_ns; //Specular highlight map
 	tex_t *map_d; //Alpha texture map
 	tex_t *map_bump; //Bump texture map
+	tex_t *map_disp; //Displacement map
+	tex_t *map_decal; //Stencil decal map
+	tex_t *map_refl; //Reflection map
 	UT_hash_handle hh;
 } mtl_t;
 
@@ -29,6 +35,7 @@ typedef struct {
 
 mtl_t *gMaterials;
 mtlID_t *gMaterialsID;
+int toAddID;
 
 void material_add(char* name);
 void material_delete(char* name);

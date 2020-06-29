@@ -6,6 +6,7 @@
 
 typedef struct {
 	char *name;
+	int width, height;
 	pixel_t **data;
 	UT_hash_handle hh;
 } tex_t;

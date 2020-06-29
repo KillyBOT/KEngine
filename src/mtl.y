@@ -2,6 +2,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "KEngine.h"
+#include "material.h"
+#include "texture.h"
+
+extern mtl_t* gMaterials;
+extern mtlID_t* gMaterialsID;
+extern tex_t* gTextures;
+
+mtl_t* currentMat;
+tex_t* currentTex;
 %}
 
 %union {
@@ -27,111 +38,155 @@ MTL_COMMENT
 {}
 |
 
-NEWMTL str
+NEWMTL MTL_STRING
 {
 	printf("Specifying a new material\n\n");
+	material_add($2);
+	currentMat = material_find($2);
 }
 |
 
-KA val val val
+KA MTL_VALUE MTL_VALUE MTL_VALUE
 {
 	printf("Specifying ambient reflection constants\n\n");
+	currentMat->ka[COLOR_R] = $2;
+	currentMat->ka[COLOR_G] = $3;
+	currentMat->ka[COLOR_B] = $4;
+
 }
 |
 
-KD val val val
+KD MTL_VALUE MTL_VALUE MTL_VALUE
 {
 	printf("Specifying diffuse reflection constants\n\n");
+	currentMat->kd[COLOR_R] = $2;
+	currentMat->kd[COLOR_G] = $3;
+	currentMat->kd[COLOR_B] = $4;
 }
 |
 
-KS val val val
+KS MTL_VALUE MTL_VALUE MTL_VALUE
 {
 	printf("Specifying specular reflection constants\n\n");
+	currentMat->ks[COLOR_R] = $2;
+	currentMat->ks[COLOR_G] = $3;
+	currentMat->ks[COLOR_B] = $4;
 }
 |
 
-NS val
+NS MTL_VALUE
 {
 	printf("Specifying specular exponent\n\n");
+	currentMat->ns = $2;
 }
 |
 
-D val
+D MTL_VALUE
 {
 	printf("Specifying opaqueness\n\n");
+	currentMat->d = $2;
 }
 |
 
-TR val
+TR MTL_VALUE
 {
 	printf("Specifying transparency\n\n");
+	currentMat->d = 1 - $2;
 }
 |
 
-NI val
+NI MTL_VALUE
 {
 	printf("Specifying optical density\n\n");
+	currentMat->ni = $2;
 }
 |
 
-ILLUM val
+ILLUM MTL_VALUE
 {
 	printf("Specifying illumination model\n\n");
+	currentMat->iModel = (int)$2;
 }
 |
 
-MAP_KA argument str
+MAP_KA argument MTL_STRING
 {
-	printf("Specifying ambient texture\n\n");
+	printf("Specifying ambient texture [%s]\n\n",$3);
+	texture_add($3);
+	currentTex = texture_find($3);
+	currentMat->map_ka = currentTex;
 }
 |
 
-MAP_KD argument str
+MAP_KD argument MTL_STRING
 {
-	printf("Specifying diffuse texture\n\n");
+	printf("Specifying diffuse texture [%s]\n\n",$3);
+	texture_add($3);
+	currentTex = texture_find($3);
+	currentMat->map_kd = currentTex;
 }
 |
 
-MAP_KS argument str
+MAP_KS argument MTL_STRING
 {
 	printf("Specifying specular texture\n\n");
+	texture_add($3);
+	currentTex = texture_find($3);
+	currentMat->map_ks = currentTex;
 }
 |
 
-MAP_NS argument str
+MAP_NS argument MTL_STRING
 {
 	printf("Specifying specular highlight component\n\n");
+	texture_add($3);
+	currentTex = texture_find($3);
+	currentMat->map_ns = currentTex;
 }
 |
 
-MAP_D argument str
+MAP_D argument MTL_STRING
 {
 	printf("Specifying alpha texture\n\n");
+	texture_add($3);
+	currentTex = texture_find($3);
+	currentMat->map_d = currentTex;
 }
 |
 
-BUMP argument str
+BUMP argument MTL_STRING
 {
 	printf("Specifying bump map\n\n");
+	texture_add($3);
+	currentTex = texture_find($3);
+	currentMat->map_bump = currentTex;
 }
 |
 
-DISP argument str
+DISP argument MTL_STRING
 {
 	printf("Specifying displacement map\n\n");
+	texture_add($3);
+	currentTex = texture_find($3);
+	currentMat->map_disp = currentTex;
 }
 |
 
-DECAL argument str
+DECAL argument MTL_STRING
 {
 	printf("Specifying decal texture\n\n");
+	texture_add($3);
+	currentTex = texture_find($3);
+	currentMat->map_decal = currentTex;
 }
 |
 
-REFL argument str
+REFL argument MTL_STRING
 {
 	printf("Specifying reflection map\n\n");
+	texture_add($3);
+	currentTex = texture_find($3);
+	currentMat->map_refl = currentTex;
 }
 |
 

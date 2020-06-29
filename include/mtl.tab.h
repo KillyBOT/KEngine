@@ -87,7 +87,7 @@ extern int mtl_yydebug;
 
 union YYSTYPE
 {
-#line 7 "mtl.y" /* yacc.c:1909  */
+#line 18 "mtl.y" /* yacc.c:1909  */
 
 	double value;
 	char string[512];

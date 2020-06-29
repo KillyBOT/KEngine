@@ -47,6 +47,11 @@ o {
 	return OBJECT_DECLARATION;
 }
 
+g {
+	//printf("[%s] is an OBJECT_GROUP\n",obj_yytext);
+	return OBJECT_GROUP;
+}
+
 s {
 	//printf("[%s] is a SMOOTH_SHADING\n",obj_yytext);
 	return SMOOTH_SHADING;

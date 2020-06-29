@@ -51,13 +51,14 @@ extern int obj_yydebug;
     POLYGON = 261,
     NAME = 262,
     OBJECT_DECLARATION = 263,
-    SMOOTH_SHADING = 264,
-    MTLLIB = 265,
-    USEMTL = 266,
-    OBJ_STRING = 267,
-    SLASH = 268,
-    OBJ_VALUE = 269,
-    OBJ_COMMENT = 270
+    OBJECT_GROUP = 264,
+    SMOOTH_SHADING = 265,
+    MTLLIB = 266,
+    USEMTL = 267,
+    OBJ_STRING = 268,
+    SLASH = 269,
+    OBJ_VALUE = 270,
+    OBJ_COMMENT = 271
   };
 #endif
 
@@ -66,12 +67,12 @@ extern int obj_yydebug;
 
 union YYSTYPE
 {
-#line 7 "obj.y" /* yacc.c:1909  */
+#line 28 "obj.y" /* yacc.c:1909  */
 
 	double value;
 	char string[512];
 
-#line 75 "obj.tab.h" /* yacc.c:1909  */
+#line 76 "obj.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

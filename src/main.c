@@ -77,12 +77,23 @@ void abort_(const char* s, ...){
 	abort();
 }
 
-int main(){
+int main(int argc, char **argv){
+
+	if(argc < 2)
+		abort_("Error! Must specify file!");
+
+	char finalName[512];
+	strcpy(finalName,"../wavefront/");
+	strcat(finalName,argv[1]);
+	obj_yyin = fopen(finalName,"r");
 
 	gMaterials = NULL;
+	gMaterialsID = NULL;
 	gTextures = NULL;
 	pQueue = NULL;
 	fQueue = NULL;
+
+	toAddID = 0;
 
 	SCREEN_WIDTH = 640;
 	SCREEN_HEIGHT = 480;
@@ -99,12 +110,19 @@ int main(){
 	init_frameBuffer();
 	matrices_init();
 
+	material_add("Default");
+
 	printf("General structures initialized\n");
 
-	shape_box(0,0,0,50,50,50);
-	generate_normals();
+	obj_yyparse();
 
-	//read_jpg_file("SpiderTex.jpg");
+	// shape_box(0,0,0,50,50,50);
+	// generate_normals();
+
+	matrix_print(mPoints);
+
+	//material_print_all();
+	//texture_print_all();
 
 	set_frameBuffer_random();
 	if(MSAA_ENABLED)msaa();
@@ -116,10 +134,8 @@ int main(){
 
 	free_frameBuffer();
 	matrices_free();
-
-	//mtl_yyin = fopen("../wavefront/spider.mtl","r");
-
-	//mtl_yyparse();
+	texture_delete_all();
+	material_delete_all();
 
 
 	return 0;

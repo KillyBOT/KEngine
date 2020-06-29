@@ -40,6 +40,16 @@ void matrices_init(){
 	mPoints = matrix_create(4,1024);
 	mNormals = matrix_create(4,1024);
 	mTextures = matrix_create(4,1024);
+
+	Vec4_t v;
+	v.v[0] = 0;
+	v.v[1] = 0;
+	v.v[2] = 0;
+	v.v[3] = 1;
+
+	matrix_add_point(mPoints,&v);
+	matrix_add_point(mTextures,&v);
+	matrix_add_point(mNormals,&v);
 }
 
 void matrix_free(mat_t* m){
