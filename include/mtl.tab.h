@@ -48,37 +48,38 @@ extern int mtl_yydebug;
     MTL_VALUE = 258,
     MTL_COMMENT = 259,
     MTL_STRING = 260,
-    NEWMTL = 261,
-    KA = 262,
-    KD = 263,
-    KS = 264,
-    NS = 265,
-    D = 266,
-    TR = 267,
-    NI = 268,
-    ILLUM = 269,
-    MAP_KA = 270,
-    MAP_KD = 271,
-    MAP_KS = 272,
-    MAP_NS = 273,
-    MAP_D = 274,
-    BUMP = 275,
-    DISP = 276,
-    DECAL = 277,
-    REFL = 278,
-    _BLENDU = 279,
-    _BLENDV = 280,
-    _BOOST = 281,
-    _MM = 282,
-    _GAIN_VALUE = 283,
-    _O = 284,
-    _S = 285,
-    _T = 286,
-    _TEXRES = 287,
-    _CLAMP = 288,
-    _BM = 289,
-    _IMFCHAN = 290,
-    _TYPE = 291
+    MTL_STRING_LONG = 261,
+    NEWMTL = 262,
+    KA = 263,
+    KD = 264,
+    KS = 265,
+    NS = 266,
+    D = 267,
+    TR = 268,
+    NI = 269,
+    ILLUM = 270,
+    MAP_KA = 271,
+    MAP_KD = 272,
+    MAP_KS = 273,
+    MAP_NS = 274,
+    MAP_D = 275,
+    BUMP = 276,
+    DISP = 277,
+    DECAL = 278,
+    REFL = 279,
+    _BLENDU = 280,
+    _BLENDV = 281,
+    _BOOST = 282,
+    _MM = 283,
+    _GAIN_VALUE = 284,
+    _O = 285,
+    _S = 286,
+    _T = 287,
+    _TEXRES = 288,
+    _CLAMP = 289,
+    _BM = 290,
+    _IMFCHAN = 291,
+    _TYPE = 292
   };
 #endif
 
@@ -92,7 +93,7 @@ union YYSTYPE
 	double value;
 	char string[512];
 
-#line 96 "mtl.tab.h" /* yacc.c:1909  */
+#line 97 "mtl.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

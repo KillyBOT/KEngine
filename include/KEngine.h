@@ -12,6 +12,7 @@
 #define POS_X 0
 #define POS_Y 1
 #define POS_Z 2
+#define POS_T 3
 
 #define COLOR_R 0
 #define COLOR_G 1
@@ -31,8 +32,8 @@
 #define VERTEX_NORMAL 1
 #define VERTEX_TEXTURE 2
 
-#define TRANSFORM_POSITION 0
-#define TRANSFORM_NORMAL 1
+#define SHAPE_TYPE_POLYGON 0
+#define SHAPE_TYPE_LINE 1
 
 #define POLYGON_TOP 0
 #define POLYGON_MID 1

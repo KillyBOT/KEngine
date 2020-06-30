@@ -49,6 +49,9 @@ extern int MSAA_ENABLED;
 extern mat_t* mPoints;
 extern mat_t* mNormals;
 extern mat_t* mTextures;
+extern mat_t* mPointsToAdd;
+extern mat_t* mNormalsToAdd;
+extern mat_t* mTexturesToAdd;
 extern UT_array* cstack;
 extern UT_icd matrix_icd;
 
@@ -82,6 +85,8 @@ int main(int argc, char **argv){
 	if(argc < 2)
 		abort_("Error! Must specify file!");
 
+	printf("Initializing general structures...\n");
+
 	char finalName[512];
 	strcpy(finalName,"../wavefront/");
 	strcat(finalName,argv[1]);
@@ -109,17 +114,31 @@ int main(int argc, char **argv){
 
 	init_frameBuffer();
 	matrices_init();
+	polygons_init();
+
 
 	material_add("Default");
 
-	printf("General structures initialized\n");
+
+
+	printf("General structures initialized!\n\n");
+
+
 
 	obj_yyparse();
+	if(mNormals->lastcol == -1) generate_normals();
+
+	cstack_translate(50,50,50);
+	cstack_scale(3,3,3);
+	cstack_rotate(ROTATE_Z,M_PI/3);
+	cstack_apply();
 
 	// shape_box(0,0,0,50,50,50);
 	// generate_normals();
 
-	matrix_print(mPoints);
+	//matrix_print(mPoints);
+	//matrix_print(mTextures);
+	//matrix_print(mNormals);
 
 	//material_print_all();
 	//texture_print_all();
@@ -129,13 +148,16 @@ int main(int argc, char **argv){
 
 	printf("Drawing picture...\n");
 	write_png_file("test.png");
+	printf("Picture drawn!\n\n");
 
-	printf("Freeing structures\n");
+	printf("Freeing structures...\n");
 
 	free_frameBuffer();
 	matrices_free();
+	polygons_free();
 	texture_delete_all();
 	material_delete_all();
+	printf("Structures freed!\n\n");
 
 
 	return 0;

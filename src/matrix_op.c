@@ -150,13 +150,17 @@ void matrix_ident(mat_t* m){
 	m->lastcol = 3;
 }
 
-void matrix_transform(int transformType){
+void cstack_apply(){
 
-	switch(transformType){
-		case TRANSFORM_POSITION:
-			matrix_mult(cstack_peek(),mPoints);
-			break;
-	}
+	mat_t* mi = matrix_create(cstack_peek()->rows,cstack_peek()->cols);
+	matrix_copy(mi,cstack_peek());
+	matrix_inverse(mi);
+	matrix_transpose(mi);
+
+	matrix_mult(cstack_peek(),mPoints);
+	matrix_mult(mi,mNormals);
+
+	matrix_free(mi);
 }
 
 double matrix_det(mat_t* m){
@@ -167,13 +171,16 @@ double matrix_det(mat_t* m){
 	else {
 
 		double final = 0;
-
 		double sign = 1;
+		double currentTop;
 		int tmpRow, tmpCol;
 
 		mat_t* tmp = matrix_create(m->rows-1,m->cols-1);
+		tmp->lastcol = m->lastcol-1;
 
 		for(int topCol = 0; topCol < m->cols; topCol++){
+
+			currentTop = m->m[0][topCol];
 
 			tmpCol = 0;
 
@@ -190,18 +197,92 @@ double matrix_det(mat_t* m){
 				}
 				
 			}
-
-			final += sign * matrix_det(tmp);
+			final += currentTop * sign * matrix_det(tmp);
 			sign *= -1;
 
 		}
 
 		matrix_free(tmp);
+
+		return final;
 	}
 }
 void matrix_minor(mat_t* m){
-	
+	mat_t *final, *tmp;
+	int tmpRow, tmpCol;
+
+	final = matrix_create(m->rows,m->cols);
+	matrix_copy(final,m);
+	tmp = matrix_create(m->rows-1,m->cols-1);
+	tmp->lastcol = m->lastcol-1;
+
+	for(int excludeRow = 0; excludeRow < m->rows; excludeRow++){
+		for(int excludeCol = 0; excludeCol < m->cols; excludeCol++){
+			tmpRow = 0;
+			tmpCol = 0;
+
+			for(int r = 0; r < m->rows; r++){
+
+				if(r != excludeRow){
+					tmpCol = 0;
+					for(int c = 0; c < m->cols; c++){
+						if(c != excludeCol){
+							tmp->m[tmpRow][tmpCol] = m->m[r][c];
+							tmpCol++;
+						}
+					}
+					tmpRow++;
+				}
+			}
+
+			final->m[excludeRow][excludeCol] = matrix_det(tmp) * pow(-1, excludeRow+excludeCol+2);
+		}
+	}
+
+	matrix_free(tmp);
+	matrix_copy(m,final);
+	matrix_free(final);
+
 }
-// void mat_transpose(mat_t* m);
-// void matrix_adjugate(mat_t* m);
-// void matrix_inverse(mat_t* m);
+void matrix_transpose(mat_t* m){
+	mat_t* mt = matrix_create(m->cols,m->rows);
+	matrix_copy(mt,m);
+
+	for(int r = 0; r < m->rows; r++){
+		for(int c = 0; c < m->cols; c++){
+			mt->m[c][r] = m->m[r][c];
+		}
+	}
+
+	matrix_copy(m,mt);
+	matrix_free(mt);
+}
+void matrix_adjugate(mat_t* m){
+	mat_t* ma = matrix_create(m->rows,m->cols);
+	matrix_copy(ma,m);
+
+	matrix_minor(ma);
+	matrix_transpose(ma);
+
+	matrix_copy(m,ma);
+	matrix_free(ma);
+}
+void matrix_inverse(mat_t* m){
+	mat_t* mi = matrix_create(m->rows,m->cols);
+	matrix_copy(mi,m);
+
+	matrix_adjugate(mi);
+
+	double det = matrix_det(m);
+	det = 1.0 / det;
+
+	for(int r = 0; r < m->rows; r++){
+		for(int c = 0; c < m->cols; c++){
+			mi->m[r][c] *= det;
+		}
+	}
+
+	matrix_copy(m,mi);
+	matrix_free(mi);
+
+}

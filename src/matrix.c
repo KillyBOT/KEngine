@@ -10,6 +10,12 @@
 extern mat_t* mPoints;
 extern mat_t* mNormals;
 extern mat_t* mTextures;
+extern mat_t* mPointToAdd;
+extern mat_t* mNormalsToAdd;
+extern mat_t* mTexturesToAdd;
+extern mat_t* mPointsTemp;
+extern mat_t* mTexturesTemp;
+extern mat_t* mNormalsTemp;
 extern UT_array* cstack;
 
 mat_t* matrix_create(int rows, int cols){
@@ -17,7 +23,7 @@ mat_t* matrix_create(int rows, int cols){
 
 	m->rows = rows;
 	m->cols = cols;
-	m->lastcol = 0;
+	m->lastcol = -1;
 
 	m->m = (double**)malloc(sizeof(double*) * m->rows);
 	for(int r = 0; r < m->rows; r++)
@@ -41,15 +47,28 @@ void matrices_init(){
 	mNormals = matrix_create(4,1024);
 	mTextures = matrix_create(4,1024);
 
+	mPointsToAdd = matrix_create(4,1024);
+	mNormalsToAdd = matrix_create(4,1024);
+	mTexturesToAdd = matrix_create(4,1024);
+
+	mPointsTemp = matrix_create(4,1024);
+	mNormalsTemp = matrix_create(4,1024);
+	mTexturesTemp = matrix_create(4,1024);
+
 	Vec4_t v;
 	v.v[0] = 0;
 	v.v[1] = 0;
 	v.v[2] = 0;
 	v.v[3] = 1;
 
-	matrix_add_point(mPoints,&v);
-	matrix_add_point(mTextures,&v);
-	matrix_add_point(mNormals,&v);
+	matrix_add_point(mPointsToAdd,&v);
+	matrix_add_point(mNormalsToAdd,&v);
+
+	v.v[0] = -1;
+	v.v[1] = -1;
+	v.v[2] = 0;
+
+	matrix_add_point(mTexturesToAdd,&v);
 }
 
 void matrix_free(mat_t* m){
@@ -64,6 +83,12 @@ void matrices_free(){
 	matrix_free(mPoints);
 	matrix_free(mNormals);
 	matrix_free(mTextures);
+	matrix_free(mPointsToAdd);
+	matrix_free(mNormalsToAdd);
+	matrix_free(mTexturesToAdd);
+	matrix_free(mPointsTemp);
+	matrix_free(mTexturesTemp);
+	matrix_free(mNormalsTemp);
 	utarray_free(cstack);
 }
 
@@ -111,16 +136,20 @@ void matrix_dtor_icd(void *_elt){
 }
 
 void matrix_print(mat_t* m){
+	printf("Rows: [%d]\tColumns:[%d]\n", m->rows,m->lastcol+1);
 	for(int r = 0; r < m->rows; r++){
 		for(int c = 0; c <= m->lastcol; c++){
 			printf("%.3lf ", m->m[r][c]);
 		}
 		printf("\n");
 	}
+	printf("\n");
 }
+
 void matrix_print_point(mat_t* m, int p){
 	printf("x:[%.3lf]\ty:[%.3lf]z:[%.3lf]\n", m->m[POS_X][p], m->m[POS_Y][p], m->m[POS_Z][p]);
 }
+
 Vec4_t *matrix_find(mat_t* m, int p){
 
 	if(p < 0 || p > m->lastcol) {
@@ -131,16 +160,26 @@ Vec4_t *matrix_find(mat_t* m, int p){
 	Vec4_t* v = vertex_init(m->m[POS_X][p],m->m[POS_Y][p],m->m[POS_Z][p]);
 	return v;
 }
+
 void matrix_add_point(mat_t* m, Vec4_t* v){
 	//vertex_print(v);
+
+	m->lastcol++;
+	if(m->lastcol == m->cols) matrix_grow(m, m->cols * 2);
+
 	m->m[POS_X][m->lastcol] = v->v[POS_X];
 	m->m[POS_Y][m->lastcol] = v->v[POS_Y];
 	m->m[POS_Z][m->lastcol] = v->v[POS_Z];
 	m->m[3][m->lastcol] = 1;
+}
 
-	m->lastcol++;
+void matrix_add_matrix_point(mat_t* dest, mat_t* src, int p){
+	Vec4_t* v = matrix_find(src, p);
 
-	if(m->lastcol == m->cols) matrix_grow(m, m->cols * 2);
+	if(v != NULL){
+		matrix_add_point(dest, v);
+		free(v);
+	}
 }
 void matrix_set_point(mat_t* m, int p, Vec4_t* v){
 

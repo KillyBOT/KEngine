@@ -81,6 +81,7 @@
 #include "vertex.h"
 #include "matrix.h"
 #include "parse.h"
+#include "shape.h"
 
 #include "mtl.tab.h"
 
@@ -88,16 +89,24 @@ extern mat_t* mPoints;
 extern mat_t* mTextures;
 extern mat_t* mNormals;
 
+extern mat_t* mPointsToAdd;
+extern mat_t* mTexturesToAdd;
+extern mat_t* mNormalsToAdd;
+
 extern mtl_t* gMaterials;
 
 extern FILE* mtl_yyin;
 
 int currentMatID = 0;
+int makeNormals = 0;
 Vec4_t vTemp;
+Vec4_t pTemp;
+Vec4_t tTemp;
+Vec4_t nTemp;
 char finalName[512];
 
 
-#line 101 "obj.tab.c" /* yacc.c:339  */
+#line 110 "obj.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -143,9 +152,10 @@ extern int obj_yydebug;
     MTLLIB = 266,
     USEMTL = 267,
     OBJ_STRING = 268,
-    SLASH = 269,
-    OBJ_VALUE = 270,
-    OBJ_COMMENT = 271
+    OBJ_STRING_LONG = 269,
+    SLASH = 270,
+    OBJ_VALUE = 271,
+    OBJ_COMMENT = 272
   };
 #endif
 
@@ -154,12 +164,12 @@ extern int obj_yydebug;
 
 union YYSTYPE
 {
-#line 28 "obj.y" /* yacc.c:355  */
+#line 37 "obj.y" /* yacc.c:355  */
 
 	double value;
 	char string[512];
 
-#line 163 "obj.tab.c" /* yacc.c:355  */
+#line 173 "obj.tab.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -176,7 +186,7 @@ int obj_yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 180 "obj.tab.c" /* yacc.c:358  */
+#line 190 "obj.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -418,21 +428,21 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  2
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   62
+#define YYLAST   37
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  17
+#define YYNTOKENS  18
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  11
+#define YYNNTS  10
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  32
+#define YYNRULES  28
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  62
+#define YYNSTATES  45
 
 /* YYTRANSLATE[YYX] -- Symbol number corresponding to YYX as returned
    by yylex, with out-of-bounds checking.  */
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   271
+#define YYMAXUTOK   272
 
 #define YYTRANSLATE(YYX)                                                \
   ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
@@ -468,17 +478,16 @@ static const yytype_uint8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
-      15,    16
+      15,    16,    17
 };
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    40,    40,    41,    46,    55,    60,    65,    70,    75,
-      82,    88,    94,   100,   105,   110,   115,   121,   128,   135,
-     144,   145,   146,   147,   150,   151,   152,   153,   157,   160,
-     163,   166,   172
+       0,    49,    49,    50,    55,    64,    69,    74,    79,    84,
+      91,    97,   103,   110,   115,   147,   153,   160,   167,   176,
+     177,   178,   179,   180,   184,   193,   204,   215,   225
 };
 #endif
 
@@ -489,9 +498,9 @@ static const char *const yytname[] =
 {
   "$end", "error", "$undefined", "VERTEX", "TCOORD", "NORMAL", "POLYGON",
   "NAME", "OBJECT_DECLARATION", "OBJECT_GROUP", "SMOOTH_SHADING", "MTLLIB",
-  "USEMTL", "OBJ_STRING", "SLASH", "OBJ_VALUE", "OBJ_COMMENT", "$accept",
-  "input", "command", "coords", "rectangle", "triangle", "vt", "vn", "vtn",
-  "str", "val", YY_NULLPTR
+  "USEMTL", "OBJ_STRING", "OBJ_STRING_LONG", "SLASH", "OBJ_VALUE",
+  "OBJ_COMMENT", "$accept", "input", "command", "coords", "polygon", "vt",
+  "vn", "vtn", "v", "str", YY_NULLPTR
 };
 #endif
 
@@ -501,14 +510,14 @@ static const char *const yytname[] =
 static const yytype_uint16 yytoknum[] =
 {
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
-     265,   266,   267,   268,   269,   270,   271
+     265,   266,   267,   268,   269,   270,   271,   272
 };
 # endif
 
-#define YYPACT_NINF -20
+#define YYPACT_NINF -15
 
 #define yypact_value_is_default(Yystate) \
-  (!!((Yystate) == (-20)))
+  (!!((Yystate) == (-15)))
 
 #define YYTABLE_NINF -1
 
@@ -519,13 +528,11 @@ static const yytype_uint16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-     -20,    46,   -20,    -7,    -7,    -7,     6,    -8,    -8,     6,
-      11,    12,   -20,   -20,     8,   -20,   -20,   -20,   -20,   -20,
-     -20,     6,     6,     6,    -4,   -20,   -20,   -20,   -20,   -20,
-     -20,   -20,   -20,    18,     6,    13,     6,    22,     6,    23,
-      -2,     6,    25,     6,     6,     6,    30,     6,     6,     6,
-      33,     6,   -20,   -20,   -20,   -20,   -20,    33,   -20,     6,
-     -20,   -20
+     -15,     0,   -15,    -9,    -9,    -9,     4,     5,     6,     9,
+      13,    14,   -15,   -15,    12,   -15,   -15,   -15,    15,   -15,
+       4,     4,     4,     4,   -15,   -15,   -15,   -15,   -15,   -15,
+     -15,   -15,    16,   -14,   -15,   -15,   -15,   -15,    17,    18,
+      20,   -15,   -15,    21,   -15
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -533,27 +540,23 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-       2,     0,     1,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,    16,     3,     0,     9,    11,    10,    32,    14,
-      15,     0,     0,     0,     0,    31,     5,     6,     7,     8,
-      13,     4,    12,    19,     0,     0,     0,     0,     0,     0,
-       0,     0,    18,    26,     0,    25,     0,    24,     0,     0,
-      28,    27,    17,    22,    28,    21,    20,     0,    29,     0,
-      23,    30
+       2,     0,     1,     0,     0,     0,    19,     0,     0,     0,
+       0,     0,    15,     3,     0,     9,    11,    10,    27,    14,
+      19,    19,    19,    19,    28,     6,     5,     8,     7,    13,
+       4,    12,    18,     0,    22,    21,    20,    23,    17,     0,
+      24,    16,    25,     0,    26
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -20,   -20,   -20,    10,   -20,   -20,   -12,   -16,   -19,    40,
-      -6
+     -15,   -15,   -15,    19,    -7,   -15,   -15,   -15,   -15,    23
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     1,    13,    15,    19,    20,    21,    22,    23,    26,
-      35
+      -1,     1,    13,    15,    19,    20,    21,    22,    23,    26
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -561,55 +564,45 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_uint8 yytable[] =
 {
-      24,    27,    29,    30,    38,    25,    36,    18,    14,    34,
-      40,    18,    49,    18,    16,    17,    37,    39,    41,    47,
-      45,    18,    43,    33,    31,    32,     0,    44,    56,    55,
-      37,    53,    39,    42,    50,    51,    46,    48,    54,    37,
-      52,    39,    57,    58,    49,    60,     2,    59,    28,     3,
-       4,     5,     6,    61,     7,     8,     9,    10,    11,     0,
-       0,     0,    12
+       2,    39,    40,     3,     4,     5,     6,    14,     7,     8,
+       9,    10,    11,    34,    35,    36,    37,    12,    24,    24,
+      18,    25,    27,    16,    17,    29,    30,    31,    32,     0,
+      33,    28,    38,    41,    42,    43,     0,    44
 };
 
 static const yytype_int8 yycheck[] =
 {
-       6,     7,     8,     9,    23,    13,    22,    15,    15,    21,
-      14,    15,    14,    15,     4,     5,    22,    23,    24,    38,
-      36,    15,    34,    15,    13,    13,    -1,    14,    47,    45,
-      36,    43,    38,    15,    40,    41,    14,    14,    44,    45,
-      15,    47,    48,    49,    14,    51,     0,    14,     8,     3,
-       4,     5,     6,    59,     8,     9,    10,    11,    12,    -1,
-      -1,    -1,    16
+       0,    15,    16,     3,     4,     5,     6,    16,     8,     9,
+      10,    11,    12,    20,    21,    22,    23,    17,    13,    13,
+      16,    16,    16,     4,     5,    16,    13,    13,    16,    -1,
+      15,     8,    16,    16,    16,    15,    -1,    16
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,    18,     0,     3,     4,     5,     6,     8,     9,    10,
-      11,    12,    16,    19,    15,    20,    20,    20,    15,    21,
-      22,    23,    24,    25,    27,    13,    26,    27,    26,    27,
-      27,    13,    13,    15,    23,    27,    24,    27,    25,    27,
-      14,    27,    15,    23,    14,    24,    14,    25,    14,    14,
-      27,    27,    15,    23,    27,    24,    25,    27,    27,    14,
-      27,    27
+       0,    19,     0,     3,     4,     5,     6,     8,     9,    10,
+      11,    12,    17,    20,    16,    21,    21,    21,    16,    22,
+      23,    24,    25,    26,    13,    16,    27,    16,    27,    16,
+      13,    13,    16,    15,    22,    22,    22,    22,    16,    15,
+      16,    16,    16,    15,    16
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,    17,    18,    18,    19,    19,    19,    19,    19,    19,
-      19,    19,    19,    19,    19,    19,    19,    20,    20,    20,
-      21,    21,    21,    21,    22,    22,    22,    22,    23,    24,
-      25,    26,    27
+       0,    18,    19,    19,    20,    20,    20,    20,    20,    20,
+      20,    20,    20,    20,    20,    20,    21,    21,    21,    22,
+      22,    22,    22,    22,    23,    24,    25,    26,    27
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
        0,     2,     0,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     1,     4,     3,     2,
-       4,     4,     4,     4,     3,     3,     3,     3,     3,     4,
-       5,     1,     1
+       2,     2,     2,     2,     2,     1,     4,     3,     2,     0,
+       2,     2,     2,     2,     3,     4,     5,     1,     1
 };
 
 
@@ -1286,169 +1279,230 @@ yyreduce:
   switch (yyn)
     {
         case 4:
-#line 47 "obj.y" /* yacc.c:1646  */
+#line 56 "obj.y" /* yacc.c:1646  */
     {
-	printf("This specifies the mtl file\n");
+	//printf("This specifies the mtl file\n");
 	strcpy(finalName,"../wavefront/");
 	strcat(finalName,(yyvsp[0].string));
 	mtl_yyin = fopen(finalName, "r");
 	mtl_yyparse();
 }
-#line 1298 "obj.tab.c" /* yacc.c:1646  */
+#line 1291 "obj.tab.c" /* yacc.c:1646  */
     break;
 
   case 5:
-#line 56 "obj.y" /* yacc.c:1646  */
+#line 65 "obj.y" /* yacc.c:1646  */
     {
-	//printf("This declares an object\n");
+	////printf("This declares an object\n");
 }
-#line 1306 "obj.tab.c" /* yacc.c:1646  */
+#line 1299 "obj.tab.c" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 61 "obj.y" /* yacc.c:1646  */
+#line 70 "obj.y" /* yacc.c:1646  */
     {
-	//printf("This declares an object\n");
+	////printf("This declares an object\n");
 }
-#line 1314 "obj.tab.c" /* yacc.c:1646  */
+#line 1307 "obj.tab.c" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 66 "obj.y" /* yacc.c:1646  */
+#line 75 "obj.y" /* yacc.c:1646  */
     {
 
 }
-#line 1322 "obj.tab.c" /* yacc.c:1646  */
+#line 1315 "obj.tab.c" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 71 "obj.y" /* yacc.c:1646  */
+#line 80 "obj.y" /* yacc.c:1646  */
     {
 
 }
-#line 1330 "obj.tab.c" /* yacc.c:1646  */
+#line 1323 "obj.tab.c" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 76 "obj.y" /* yacc.c:1646  */
+#line 85 "obj.y" /* yacc.c:1646  */
     {
-	printf("This is a vertex definition\n");
-	matrix_add_point(mPoints,&vTemp);
+	//printf("This is a vertex definition\n");
+	matrix_add_point(mPointsToAdd,&vTemp);
 
 }
-#line 1340 "obj.tab.c" /* yacc.c:1646  */
+#line 1333 "obj.tab.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 83 "obj.y" /* yacc.c:1646  */
+#line 92 "obj.y" /* yacc.c:1646  */
     {
-	printf("This is a normal definition\n");
-	matrix_add_point(mNormals,&vTemp);
+	//printf("This is a normal definition\n");
+	matrix_add_point(mNormalsToAdd,&vTemp);
 }
-#line 1349 "obj.tab.c" /* yacc.c:1646  */
+#line 1342 "obj.tab.c" /* yacc.c:1646  */
     break;
 
   case 11:
-#line 89 "obj.y" /* yacc.c:1646  */
+#line 98 "obj.y" /* yacc.c:1646  */
     {
-	printf("This is a texture coordinate definition\n");
-	matrix_add_point(mNormals,&vTemp);
+	//printf("This is a texture coordinate definition\n");
+	matrix_add_point(mTexturesToAdd,&vTemp);
 }
-#line 1358 "obj.tab.c" /* yacc.c:1646  */
+#line 1351 "obj.tab.c" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 95 "obj.y" /* yacc.c:1646  */
+#line 104 "obj.y" /* yacc.c:1646  */
     {
-	printf("This specifies the mtl file\n");
+	//printf("This specifies the mtl file\n");
+	////printf("%s\n",$2);
 	currentMatID = material_find((yyvsp[0].string));
 }
-#line 1367 "obj.tab.c" /* yacc.c:1646  */
+#line 1361 "obj.tab.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 101 "obj.y" /* yacc.c:1646  */
+#line 111 "obj.y" /* yacc.c:1646  */
     {
-	printf("This specifies the smooth shading group\n");
+	//printf("This specifies the smooth shading group\n");
 }
-#line 1375 "obj.tab.c" /* yacc.c:1646  */
+#line 1369 "obj.tab.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 106 "obj.y" /* yacc.c:1646  */
+#line 116 "obj.y" /* yacc.c:1646  */
     {
-	printf("This is a rectangle polygon\n");
+	//printf("This is a polygon\n");
+
+	if(mPointsTemp->lastcol >= 2){
+
+		for(int n = 1; n < mPointsTemp->lastcol; n++){
+			matrix_add_matrix_point(mPoints,mPointsTemp,0);
+			matrix_add_matrix_point(mPoints,mPointsTemp,n);
+			matrix_add_matrix_point(mPoints,mPointsTemp,n+1);
+
+			matrix_add_matrix_point(mTextures,mTexturesTemp,0);
+			mTextures->m[POS_T][mTextures->lastcol] = SHAPE_TYPE_POLYGON;
+			matrix_add_matrix_point(mTextures,mTexturesTemp,n);
+			mTextures->m[POS_T][mTextures->lastcol] = SHAPE_TYPE_POLYGON;
+			matrix_add_matrix_point(mTextures,mTexturesTemp,n+1);
+			mTextures->m[POS_T][mTextures->lastcol] = SHAPE_TYPE_POLYGON;
+
+			if(!makeNormals){
+				matrix_add_matrix_point(mNormals,mNormalsTemp,0);
+				matrix_add_matrix_point(mNormals,mNormalsTemp,n);
+				matrix_add_matrix_point(mNormals,mNormalsTemp,n+1);
+			}
+		}
+
+	}
+
+	mPointsTemp->lastcol = -1;
+	mTexturesTemp->lastcol = -1;
+	mNormalsTemp->lastcol = -1;
 }
-#line 1383 "obj.tab.c" /* yacc.c:1646  */
+#line 1404 "obj.tab.c" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 111 "obj.y" /* yacc.c:1646  */
+#line 148 "obj.y" /* yacc.c:1646  */
     {
-	printf("This is a triangle polygon\n");
+	//printf("This is a comment\n");
 }
-#line 1391 "obj.tab.c" /* yacc.c:1646  */
+#line 1412 "obj.tab.c" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 116 "obj.y" /* yacc.c:1646  */
-    {
-	printf("This is a comment\n");
-}
-#line 1399 "obj.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 17:
-#line 122 "obj.y" /* yacc.c:1646  */
+#line 154 "obj.y" /* yacc.c:1646  */
     {
 	vTemp.v[0] = (yyvsp[-3].value);
 	vTemp.v[1] = (yyvsp[-2].value);
 	vTemp.v[2] = (yyvsp[-1].value);
 	vTemp.v[3] = (yyvsp[0].value);
 }
-#line 1410 "obj.tab.c" /* yacc.c:1646  */
+#line 1423 "obj.tab.c" /* yacc.c:1646  */
     break;
 
-  case 18:
-#line 129 "obj.y" /* yacc.c:1646  */
+  case 17:
+#line 161 "obj.y" /* yacc.c:1646  */
     {
 	vTemp.v[0] = (yyvsp[-2].value);
 	vTemp.v[1] = (yyvsp[-1].value);
 	vTemp.v[2] = (yyvsp[0].value);
 	vTemp.v[3] = 1;
 }
-#line 1421 "obj.tab.c" /* yacc.c:1646  */
+#line 1434 "obj.tab.c" /* yacc.c:1646  */
     break;
 
-  case 19:
-#line 136 "obj.y" /* yacc.c:1646  */
+  case 18:
+#line 168 "obj.y" /* yacc.c:1646  */
     {
 	vTemp.v[0] = (yyvsp[-1].value);
 	vTemp.v[1] = (yyvsp[0].value);
 	vTemp.v[2] = (double)currentMatID;
 	vTemp.v[3] = 1;
 }
-#line 1432 "obj.tab.c" /* yacc.c:1646  */
+#line 1445 "obj.tab.c" /* yacc.c:1646  */
     break;
 
-  case 31:
-#line 167 "obj.y" /* yacc.c:1646  */
+  case 24:
+#line 185 "obj.y" /* yacc.c:1646  */
     {
-	printf("String value: [%s]\n",(yyvsp[0].string));
+	makeNormals = 1;
+
+	matrix_add_matrix_point(mPointsTemp,mPointsToAdd,(int)(yyvsp[-2].value));
+	matrix_add_matrix_point(mTexturesTemp,mTexturesToAdd,(int)(yyvsp[0].value));
 }
-#line 1440 "obj.tab.c" /* yacc.c:1646  */
+#line 1456 "obj.tab.c" /* yacc.c:1646  */
     break;
 
-  case 32:
-#line 173 "obj.y" /* yacc.c:1646  */
+  case 25:
+#line 194 "obj.y" /* yacc.c:1646  */
     {
-	printf("Double or location value: [%.3lf]\n",(yyvsp[0].value));
+
+	makeNormals = 0;
+
+	matrix_add_matrix_point(mPointsTemp,mPointsToAdd,(int)(yyvsp[-3].value));
+	matrix_add_matrix_point(mTexturesTemp,mTexturesToAdd,0);
+	matrix_add_matrix_point(mNormalsTemp,mNormalsToAdd,(int)(yyvsp[0].value));
 }
-#line 1448 "obj.tab.c" /* yacc.c:1646  */
+#line 1469 "obj.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 26:
+#line 205 "obj.y" /* yacc.c:1646  */
+    {
+
+	makeNormals = 0;
+
+	matrix_add_matrix_point(mPointsTemp,mPointsToAdd,(int)(yyvsp[-4].value));
+	matrix_add_matrix_point(mTexturesTemp,mTexturesToAdd,(int)(yyvsp[-2].value));
+	matrix_add_matrix_point(mNormalsTemp,mNormalsToAdd,(int)(yyvsp[0].value));
+}
+#line 1482 "obj.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 27:
+#line 216 "obj.y" /* yacc.c:1646  */
+    {
+
+	makeNormals = 1;
+
+	matrix_add_matrix_point(mPointsTemp,mPointsToAdd,(int)(yyvsp[0].value));
+	matrix_add_matrix_point(mTexturesTemp,mTexturesToAdd,0);
+}
+#line 1494 "obj.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 28:
+#line 226 "obj.y" /* yacc.c:1646  */
+    {
+	//printf("String OBJ_VALUEue: [%s]\n",$1);
+}
+#line 1502 "obj.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1452 "obj.tab.c" /* yacc.c:1646  */
+#line 1506 "obj.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1676,7 +1730,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 177 "obj.y" /* yacc.c:1906  */
+#line 231 "obj.y" /* yacc.c:1906  */
 
 
 int obj_yyerror(char *s){

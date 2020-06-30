@@ -56,9 +56,10 @@ extern int obj_yydebug;
     MTLLIB = 266,
     USEMTL = 267,
     OBJ_STRING = 268,
-    SLASH = 269,
-    OBJ_VALUE = 270,
-    OBJ_COMMENT = 271
+    OBJ_STRING_LONG = 269,
+    SLASH = 270,
+    OBJ_VALUE = 271,
+    OBJ_COMMENT = 272
   };
 #endif
 
@@ -67,12 +68,12 @@ extern int obj_yydebug;
 
 union YYSTYPE
 {
-#line 28 "obj.y" /* yacc.c:1909  */
+#line 37 "obj.y" /* yacc.c:1909  */
 
 	double value;
 	char string[512];
 
-#line 76 "obj.tab.h" /* yacc.c:1909  */
+#line 77 "obj.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

@@ -21,7 +21,7 @@ tex_t* currentTex;
 }
 
 %token <value> MTL_VALUE
-%token <string> MTL_COMMENT MTL_STRING
+%token <string> MTL_COMMENT MTL_STRING MTL_STRING_LONG
 %token <string> NEWMTL KA KD KS NS D TR NI ILLUM
 %token <string> MAP_KA MAP_KD MAP_KS MAP_NS MAP_D BUMP DISP DECAL REFL
 %token <string> _BLENDU _BLENDV _BOOST _MM _GAIN_VALUE _O _S _T _TEXRES _CLAMP _BM _IMFCHAN _TYPE
@@ -40,7 +40,7 @@ MTL_COMMENT
 
 NEWMTL MTL_STRING
 {
-	printf("Specifying a new material\n\n");
+	printf("Specifying a new material %s\n\n",$2);
 	material_add($2);
 	currentMat = material_find($2);
 }

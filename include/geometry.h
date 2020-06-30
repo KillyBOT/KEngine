@@ -6,9 +6,9 @@
 #include "material.h"
 
 typedef struct {
-	Vec4_t *p; //Top, middle, and bottom vertices
+	Vec4_t **p; //Top, middle, and bottom vertices
 	//Vec4_t *dP; //Where the vertices are on screen. These will be used for drawing, but now lerping for lighting or anything like that
-	Vec4_t *n; //Top, middle, and bottom normals
+	Vec4_t **n; //Top, middle, and bottom normals
 	double t[3][2]; //Top, middle, and bottom texture coords
 
 	int ifLight;
@@ -30,8 +30,11 @@ typedef struct {
 UT_array *pQueue;
 UT_icd polygon_icd;
 
-polygon_t create_polygon();
-
+void polygon_add(int point);
+void polygon_dtor_icd(void *_elt);
 void polygon_copy();
+
+void polygons_init();
+void polygons_free();
 
 #endif

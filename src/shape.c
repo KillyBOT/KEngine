@@ -11,7 +11,6 @@
 
 extern mat_t* mPoints;
 extern mat_t* mNormals;
-extern mat_t* mTextures;
 
 typedef struct Vec4_hash_t{
 	Vec4_t vertex;
@@ -29,6 +28,7 @@ void generate_normals(){
 	for(int point = 0; point < mPoints->lastcol; point+=3){
 
 		for(int i = 0; i < 3; i++){
+			v[i] = (Vec4_t*)malloc(sizeof(Vec4_t));
 			memset(v[i],0,sizeof(Vec4_t));
 
 			vTemp = matrix_find(mPoints,point+i);
@@ -36,6 +36,7 @@ void generate_normals(){
 
 			free(vTemp);
 		}
+
 
 
 		sn = vertex_surface_normal(v[0],v[1],v[2]);
@@ -70,7 +71,7 @@ void generate_normals(){
 		vertex_normalize(&h->normal);
 	}
 
-	for(int point = 0; point < mPoints->lastcol; point++){
+	for(int point = 0; point <= mPoints->lastcol; point++){
 		
 		vTemp = (Vec4_t*)malloc(sizeof(Vec4_t));
 		memset(vTemp,0,sizeof(Vec4_t));
