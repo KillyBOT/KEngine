@@ -60,10 +60,7 @@ extern UT_icd matrix_icd;
 extern mtl_t* gMaterials;
 extern tex_t* gTextures;
 extern UT_array* pQueue;
-extern UT_array* fQueue;
-
-extern UT_icd polygon_icd;
-extern UT_icd fragment_icd;
+extern UT_array*** fArray;
 
 
 
@@ -96,7 +93,7 @@ int main(int argc, char **argv){
 	gMaterialsID = NULL;
 	gTextures = NULL;
 	pQueue = NULL;
-	fQueue = NULL;
+	fArray = NULL;
 
 	toAddID = 0;
 
@@ -115,6 +112,7 @@ int main(int argc, char **argv){
 	init_frameBuffer();
 	matrices_init();
 	polygons_init();
+	frag_array_init();
 
 
 	material_add("Default");
@@ -157,6 +155,7 @@ int main(int argc, char **argv){
 	polygons_free();
 	texture_delete_all();
 	material_delete_all();
+	frag_array_free();
 	printf("Structures freed!\n\n");
 
 
