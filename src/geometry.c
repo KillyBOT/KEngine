@@ -39,6 +39,7 @@ void polygon_add(int point){
 
 	p->p = (Vec4_t**)malloc(sizeof(Vec4_t*) * 3);
 	p->n = (Vec4_t**)malloc(sizeof(Vec4_t*) * 3);
+	p->c = (pixel_t**)malloc(sizeof(pixel_t*) * 3);
 
 	int iTop, iMid, iBot;
 	double yMax, yMin;
@@ -53,7 +54,8 @@ void polygon_add(int point){
 		pToAdd[n] = matrix_find(mPoints,point+n);
 		nToAdd[n] = matrix_find(mNormals,point+n);
 		p->p[n] = vertex_init(0,0,0);
-		p->p[n] = vertex_init(0,0,0);
+		p->n[n] = vertex_init(0,0,0);
+		p->c[n] = (pixel_t*)malloc(sizeof(pixel_t));
 	}
 
 	for(int n = 0; n < 3; n++){
@@ -76,6 +78,23 @@ void polygon_add(int point){
 	vertex_copy(p->n[POLYGON_TOP],nToAdd[iTop]);
 	vertex_copy(p->n[POLYGON_MID],nToAdd[iMid]);
 	vertex_copy(p->n[POLYGON_BOT],nToAdd[iBot]);
+
+	//Change the colors later
+
+	p->c[POLYGON_TOP]->c[COLOR_R] = 255;
+	p->c[POLYGON_TOP]->c[COLOR_G] = 255;
+	p->c[POLYGON_TOP]->c[COLOR_B] = 255;
+	p->c[POLYGON_TOP]->c[COLOR_A] = 0;
+
+	p->c[POLYGON_MID]->c[COLOR_R] = 255;
+	p->c[POLYGON_MID]->c[COLOR_G] = 255;
+	p->c[POLYGON_MID]->c[COLOR_B] = 255;
+	p->c[POLYGON_MID]->c[COLOR_A] = 0;
+
+	p->c[POLYGON_BOT]->c[COLOR_R] = 255;
+	p->c[POLYGON_BOT]->c[COLOR_G] = 255;
+	p->c[POLYGON_BOT]->c[COLOR_B] = 255;
+	p->c[POLYGON_BOT]->c[COLOR_A] = 0;
 
 	p->t[POLYGON_TOP][TEXTURE_U] = mTextures->m[TEXTURE_U][point+iTop];
 	p->t[POLYGON_TOP][TEXTURE_V] = mTextures->m[TEXTURE_V][point+iTop];
@@ -101,8 +120,50 @@ void polygon_dtor_icd(void *_elt){
 	for(int n = 0; n < 3; n++){
 		free(p->p[n]);
 		free(p->n[n]);
+		free(p->c[n]);
 	}
 	free(p->p);
 	free(p->n);
+	free(p->c);
 }
-void polygon_copy();
+void polygon_print(polygon_t* p){
+	printf("Position vertices:\n");
+	printf("Top:\n\t");
+	vertex_print(p->p[POLYGON_TOP]);
+	printf("Middle:\n\t");
+	vertex_print(p->p[POLYGON_MID]);
+	printf("Bottom:\n\t");
+	vertex_print(p->p[POLYGON_BOT]);
+	printf("\n");
+
+	printf("Normal vertices:\n");
+	printf("Top:\n\t");
+	vertex_print(p->n[POLYGON_TOP]);
+	printf("Middle:\n\t");
+	vertex_print(p->n[POLYGON_MID]);
+	printf("Bottom:\n\t");
+	vertex_print(p->n[POLYGON_BOT]);
+	printf("\n");
+
+	printf("Texture coordinates:\n");
+	printf("Top:\n\t");
+	printf("U: [%.2lf]\tV: [%.2lf]\n", p->t[POLYGON_TOP][TEXTURE_U], p->t[POLYGON_TOP][TEXTURE_V]);
+	printf("Middle:\n\t");
+	printf("U: [%.2lf]\tV: [%.2lf]\n", p->t[POLYGON_MID][TEXTURE_U], p->t[POLYGON_MID][TEXTURE_V]);
+	printf("Bottom:\n\t");
+	printf("U: [%.2lf]\tV: [%.2lf]\n", p->t[POLYGON_BOT][TEXTURE_U], p->t[POLYGON_BOT][TEXTURE_V]);
+	printf("\n");
+
+	printf("Material: [%s]\n", p->m->name);
+	printf("\n");
+}
+
+void polygon_print_all(){
+	polygon_t *p;
+	p = NULL;
+
+	while( (p = (polygon_t*)utarray_next(pQueue,p))){
+		polygon_print(p);
+	}
+	printf("Total polygon count: [%d]\n\n", utarray_len(pQueue));
+}

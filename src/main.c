@@ -35,8 +35,12 @@ extern FILE* obj_yyin;
 
 extern int SCREEN_WIDTH;
 extern int SCREEN_HEIGHT;
-extern int input_width;
-extern int input_height;
+extern int CANVAS_WIDTH;
+extern int CANVAS_HEIGHT;
+extern int CANVAS_DEPTH;
+extern int CAMERA_X;
+extern int CAMERA_Y;
+extern int CAMERA_Z;
 
 
 
@@ -99,6 +103,15 @@ int main(int argc, char **argv){
 
 	SCREEN_WIDTH = 640;
 	SCREEN_HEIGHT = 480;
+
+	CANVAS_WIDTH = SCREEN_WIDTH;
+	CANVAS_HEIGHT = SCREEN_HEIGHT;
+	CANVAS_DEPTH = 1;
+
+	CAMERA_X = 0;
+	CAMERA_Y = 0;
+	CAMERA_Z = 0;
+
 	MSAA_ENABLED = 0;
 
 	if(MSAA_ENABLED){
@@ -114,7 +127,6 @@ int main(int argc, char **argv){
 	polygons_init();
 	frag_array_init();
 
-
 	material_add("Default");
 
 
@@ -123,13 +135,23 @@ int main(int argc, char **argv){
 
 
 
+	printf("Executing main loop...\n");
+
+
+
 	obj_yyparse();
 	if(mNormals->lastcol == -1) generate_normals();
 
-	cstack_translate(50,50,50);
-	cstack_scale(3,3,3);
-	cstack_rotate(ROTATE_Z,M_PI/3);
-	cstack_apply();
+	// cstack_translate(50,50,50);
+	// cstack_scale(3,3,3);
+	// cstack_rotate(ROTATE_Z,M_PI/3);
+
+	shade_vertex_all();
+	shade_geometry();
+
+	//polygon_print_all();
+
+	rasterize_all();
 
 	// shape_box(0,0,0,50,50,50);
 	// generate_normals();
@@ -143,6 +165,8 @@ int main(int argc, char **argv){
 
 	set_frameBuffer_random();
 	if(MSAA_ENABLED)msaa();
+
+	printf("Main loop complete!\n\n");
 
 	printf("Drawing picture...\n");
 	write_png_file("test.png");

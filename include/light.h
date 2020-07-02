@@ -11,7 +11,8 @@ int lightNum;
 
 void light_add(double l[2][3]);
 
-pixel_t pixel_lerp(pixel_t* p1, pixel_t* p2, double t);
+pixel_t* pixel_lerp(pixel_t* p1, pixel_t* p2, double t);
+double double_lerp(double d0, double d1, double t);
 
 pixel_t ref_phong(Vec4_t* n, Vec4_t* v, byte_t alight[3], mtl_t* mat, double t[2] );
 

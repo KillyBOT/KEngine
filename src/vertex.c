@@ -23,13 +23,9 @@ double vertex_element(Vec4_t* v, int vElement){
 	if(vElement < 0 || vElement > 3) return -1;
 	return v->v[vElement];
 }
-Vec4_t *vertex_add(Vec4_t* a, Vec4_t* b){
-	Vec4_t* v = vertex_init(0,0,0);
-
+void vertex_add(Vec4_t* a, Vec4_t* b){
 	for(int n = 0; n < 3; n++)
-		v->v[n] = a->v[n] + b->v[n];
-
-	return v;
+		a->v[n] = a->v[n] + b->v[n];
 }
 void vertex_copy(Vec4_t* dest, Vec4_t* src){
 	for(int n = 0; n < 4; n++)
@@ -45,7 +41,7 @@ void vertex_dtor_icd(void *_elt){
 Vec4_t* vertex_lerp(Vec4_t* v1, Vec4_t* v2, double t){
 	Vec4_t* v = vertex_init(0,0,0);
 
-	for(int n = 0; n < 3; n++)
+	for(int n = 0; n < 4; n++)
 		v->v[n] = ((t-1) * v1->v[n]) + (t * v2->v[n]);
 
 	return v;

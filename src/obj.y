@@ -104,7 +104,7 @@ USEMTL OBJ_STRING
 {
 	//printf("This specifies the mtl file\n");
 	////printf("%s\n",$2);
-	currentMatID = material_find($2);
+	currentMatID = material_find($2)->id;
 }|
 
 SMOOTH_SHADING OBJ_VALUE

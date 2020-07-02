@@ -93,7 +93,7 @@ mtl_t* material_find(char* name){
 	mtl_t* m;
 
 	HASH_FIND_STR(gMaterials,name,m);
-	//if(m == NULL) printf("Material %s not found!\n", name);
+	if(m == NULL) HASH_FIND_STR(gMaterials,"Default",m);
 	return m;
 }
 

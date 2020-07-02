@@ -66,20 +66,19 @@ frag_t* frag_init(int x, int y, double z){
 }
 void frag_add(frag_t* f){
 	if(f->x >= 0 && f->y >= 0 && f->x < SCREEN_WIDTH && f->y < SCREEN_HEIGHT){
-		if(!utarray_len(fArray[f->x][f->y]))
+		if(utarray_len(fArray[f->x][f->y]) == 0)
 			utarray_push_back(fArray[f->x][f->y],f);
 		else {
 			int p;
 			frag_t *tmp;
 
-			p = 0;
 
-			while((tmp = utarray_next(fArray[f->x][f->y],tmp))){
-				if(tmp->z <= f->z){
+			for(p = 0; p < utarray_len(fArray[f->x][f->y]); p++){
+				tmp = (frag_t*)utarray_eltptr(fArray[f->x][f->y],p);
+				if(tmp->z >= f->z){
 					utarray_insert(fArray[f->x][f->y],f,p);
 					return;
 				}
-				p++;
 			}
 		}
 	}

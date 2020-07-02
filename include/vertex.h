@@ -12,7 +12,7 @@ Vec4_t *vertex_init(double x, double y, double z);
 void vertex_free(Vec4_t* v);
 void vertex_print(Vec4_t* v);
 double vertex_element(Vec4_t* v, int vElement);
-Vec4_t *vertex_add(Vec4_t* a, Vec4_t* b);
+void vertex_add(Vec4_t* a, Vec4_t* b);
 void vertex_copy(Vec4_t* dest, Vec4_t* src);
 void vertex_dtor_icd(void *_elt);
 

@@ -1355,7 +1355,7 @@ yyreduce:
     {
 	//printf("This specifies the mtl file\n");
 	////printf("%s\n",$2);
-	currentMatID = material_find((yyvsp[0].string));
+	currentMatID = material_find((yyvsp[0].string))->id;
 }
 #line 1361 "obj.tab.c" /* yacc.c:1646  */
     break;

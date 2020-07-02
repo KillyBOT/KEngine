@@ -32,13 +32,6 @@
 #define VERTEX_NORMAL 1
 #define VERTEX_TEXTURE 2
 
-#define SHAPE_TYPE_POLYGON 0
-#define SHAPE_TYPE_LINE 1
-
-#define POLYGON_TOP 0
-#define POLYGON_MID 1
-#define POLYGON_BOT 2
-
 #define LINE_START 0
 #define LINE_END 1
 
@@ -54,6 +47,15 @@
 #define SHADE_GOURAUD 2
 #define SHADE_WIREFRAME 3
 
+#define SHAPE_TYPE_POLYGON 0
+#define SHAPE_TYPE_LINE 1
+
+#define POLYGON_TOP 0
+#define POLYGON_MID 1
+#define POLYGON_BOT 2
+
+#define THREAD_NUM 4
+
 typedef unsigned char byte_t;
 typedef double coord_t;
 
@@ -65,7 +67,13 @@ void abort_(const char* s, ...);
 
 int SCREEN_WIDTH;
 int SCREEN_HEIGHT;
-int SCREEN_WIDTH_FINAL;
-int SCREEN_HEIGHT_FINAL;
+
+int CAMERA_X;
+int CAMERA_Y;
+int CAMERA_Z;
+
+int CANVAS_WIDTH;
+int CANVAS_HEIGHT;
+int CANVAS_DEPTH;
 
 #endif
