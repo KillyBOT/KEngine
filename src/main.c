@@ -50,6 +50,14 @@ extern int MSAA_ENABLED;
 
 
 
+extern Vec4_t* vPlaneNear;
+extern Vec4_t* vPlaneLeft;
+extern Vec4_t* vPlaneRight;
+extern Vec4_t* vPlaneTop;
+extern Vec4_t* vPlaneBot;
+
+
+
 extern mat_t* mPoints;
 extern mat_t* mNormals;
 extern mat_t* mTextures;
@@ -104,8 +112,8 @@ int main(int argc, char **argv){
 	SCREEN_WIDTH = 640;
 	SCREEN_HEIGHT = 480;
 
-	CANVAS_WIDTH = SCREEN_WIDTH;
-	CANVAS_HEIGHT = SCREEN_HEIGHT;
+	CANVAS_WIDTH = 5;
+	CANVAS_HEIGHT = 5;
 	CANVAS_DEPTH = 1;
 
 	CAMERA_X = 0;
@@ -125,6 +133,7 @@ int main(int argc, char **argv){
 	init_frameBuffer();
 	matrices_init();
 	polygons_init();
+	vertices_init();
 	frag_array_init();
 
 	material_add("Default");
@@ -133,20 +142,29 @@ int main(int argc, char **argv){
 
 	printf("General structures initialized!\n\n");
 
+	printf("Reading in obj file...\n");
+
+
+	obj_yyparse();
+	if(mNormals->lastcol == -1) generate_normals();
+
+
+
+
+	printf("obj file read!\n\n");
+
+	cstack_translate(0,0,1);
+	// cstack_scale(3,3,3);
+	// cstack_rotate(ROTATE_Z,M_PI/3);
+
 
 
 	printf("Executing main loop...\n");
 
 
 
-	obj_yyparse();
-	if(mNormals->lastcol == -1) generate_normals();
-
-	// cstack_translate(50,50,50);
-	// cstack_scale(3,3,3);
-	// cstack_rotate(ROTATE_Z,M_PI/3);
-
 	shade_vertex_all();
+	matrix_print(mPoints);
 	shade_geometry();
 
 	//polygon_print_all();
@@ -177,6 +195,7 @@ int main(int argc, char **argv){
 	free_frameBuffer();
 	matrices_free();
 	polygons_free();
+	vertices_free();
 	texture_delete_all();
 	material_delete_all();
 	frag_array_free();

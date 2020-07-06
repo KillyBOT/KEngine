@@ -12,6 +12,7 @@ typedef struct {
 	//Vec4_t *dP; //Where the vertices are on screen. These will be used for drawing, but now lerping for lighting or anything like that
 	Vec4_t **n; //Top, middle, and bottom normals
 	pixel_t **c; //Top, middle, and bottom colors
+	Vec4_t* sN; //Surface normal
 	double t[3][2]; //Top, middle, and bottom texture coords
 
 	int ifLight;

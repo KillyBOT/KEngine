@@ -13,6 +13,7 @@
 extern UT_array *pQueue;
 extern UT_icd polygon_icd;
 
+extern Vec4_t* vPlaneNear;
 extern mat_t* mPoints;
 extern mat_t* mNormals;
 extern mat_t* mTextures;
@@ -57,6 +58,8 @@ void polygon_add(int point){
 		p->n[n] = vertex_init(0,0,0);
 		p->c[n] = (pixel_t*)malloc(sizeof(pixel_t));
 	}
+
+	p->sN = vertex_surface_normal(pToAdd[0],pToAdd[1],pToAdd[2]);
 
 	for(int n = 0; n < 3; n++){
 		if(pToAdd[n]->v[POS_Y] > yMax){
@@ -112,7 +115,11 @@ void polygon_add(int point){
 	free(pToAdd);
 	free(nToAdd);
 
-	utarray_push_back(pQueue,p);
+	if(vertex_dot_product(p->sN,vPlaneNear) > 0)utarray_push_back(pQueue,p);
+	else {
+		polygon_dtor_icd(p);
+		free(p);
+	}
 }
 void polygon_dtor_icd(void *_elt){
 	polygon_t* p = (polygon_t*)_elt;
@@ -125,6 +132,7 @@ void polygon_dtor_icd(void *_elt){
 	free(p->p);
 	free(p->n);
 	free(p->c);
+	free(p->sN);
 }
 void polygon_print(polygon_t* p){
 	printf("Position vertices:\n");
@@ -153,6 +161,9 @@ void polygon_print(polygon_t* p){
 	printf("Bottom:\n\t");
 	printf("U: [%.2lf]\tV: [%.2lf]\n", p->t[POLYGON_BOT][TEXTURE_U], p->t[POLYGON_BOT][TEXTURE_V]);
 	printf("\n");
+
+	printf("Surface Normal:\n\t");
+	vertex_print(p->sN);
 
 	printf("Material: [%s]\n", p->m->name);
 	printf("\n");

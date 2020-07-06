@@ -67,6 +67,7 @@ void *rasterize_help(void* ptr){
 	int phase;
 
 	int flip, lineDirection;
+	double xCompare, yCompare;
 	int gXT, gYT, gXM, gYM, gXB, gYB;
 
 	int pStart, pEnd, threadNum;
@@ -80,6 +81,9 @@ void *rasterize_help(void* ptr){
 
 	pStart = (int)((double)threadNum * pIncrease);
 	pEnd = (int)((double)(threadNum+1) * pIncrease);
+
+	xCompare = 0;
+	yCompare = 0;
 
 	//printf("%d %d %d\n", pStart, pEnd, threadNum);
 
@@ -124,12 +128,12 @@ void *rasterize_help(void* ptr){
 		for(int n = 0; n < THREAD_NUM; n++)
 			groups[n] = 0;
 
-		gXT = (vertex_element(top,POS_X) > SCREEN_WIDTH / 2) ? 1 : 0;
-		gYT = (vertex_element(top,POS_Y) > SCREEN_HEIGHT / 2) ? 1 : 0;
-		gXM = (vertex_element(mid,POS_X) > SCREEN_WIDTH / 2) ? 1 : 0;
-		gYM = (vertex_element(mid,POS_Y) > SCREEN_HEIGHT / 2) ? 1 : 0;
-		gXB = (vertex_element(bot,POS_X) > SCREEN_WIDTH / 2) ? 1 : 0;
-		gYB = (vertex_element(bot,POS_Y) > SCREEN_HEIGHT / 2) ? 1 : 0;
+		gXT = (vertex_element(top,POS_X) > xCompare) ? 1 : 0;
+		gYT = (vertex_element(top,POS_Y) > yCompare) ? 1 : 0;
+		gXM = (vertex_element(mid,POS_X) > xCompare) ? 1 : 0;
+		gYM = (vertex_element(mid,POS_Y) > yCompare) ? 1 : 0;
+		gXB = (vertex_element(bot,POS_X) > xCompare) ? 1 : 0;
+		gYB = (vertex_element(bot,POS_Y) > yCompare) ? 1 : 0;
 
 		if((gXT && gYT) || (gXM && gYM) || (gXB && gYB)) groups[3] = 1;
 		if((!gXT && !gYT) || (!gXM && !gYM) || (!gXB && !gYB)) groups[0] = 1;
@@ -137,14 +141,14 @@ void *rasterize_help(void* ptr){
 		if((!gXT && gYT) || (!gXM && gYM) || (!gXB && gYB)) groups[2] = 1;
 		if((gXT && !gYT) || (gXM && !gYM) || (gXB && !gYB)) groups[1] = 1;
 
+		pthread_mutex_lock(&mutex_init);
+
 		// vertex_print(top);
 		// vertex_print(mid);
 		// vertex_print(bot);
 		// printf("%d %d %d %lf %lf\n", d0, d1, d2, dt0, dt1);
 		// printf("%d %d %d %d\n", groups[0], groups[1], groups[2], groups[3]);
 		// printf("\n");
-
-		pthread_mutex_lock(&mutex_init);
 
 		for(int n = 0; n < THREAD_NUM; n++){
 			if(groups[n]) pthread_mutex_lock(&fArray_mutex[n]);
@@ -275,14 +279,14 @@ void *rasterize_help(void* ptr){
 			free(n1);
 			free(c0);
 			free(c1);
-			
-
 		}
+
+		//pthread_mutex_lock(&mutex_init);
 
 		for(int n = 0; n < THREAD_NUM; n++){
 			if(groups[n])pthread_mutex_unlock(&fArray_mutex[n]);
 		}
-		//pthread_mutex_unlock(&test_mutex);
+		//pthread_mutex_unlock(&mutex_init);
 
 	}
 }

@@ -6,6 +6,13 @@
 #include "KEngine.h"
 #include "vertex.h"
 
+extern Vec4_t* vView;
+extern Vec4_t* vPlaneNear;
+extern Vec4_t* vPlaneLeft;
+extern Vec4_t* vPlaneRight;
+extern Vec4_t* vPlaneTop;
+extern Vec4_t* vPlaneBot;
+
 Vec4_t* vertex_init(double x, double y, double z){
 	Vec4_t* v = (Vec4_t*)malloc(sizeof(Vec4_t));
 
@@ -16,6 +23,22 @@ Vec4_t* vertex_init(double x, double y, double z){
 
 	return v;
 }
+void vertices_init(){
+	cPos = vertex_init(0,0,0);
+	vPlaneNear = vertex_init(0,0,1);
+	vPlaneLeft = vertex_init( 1.0 / sqrt(2), 0, 1.0 / sqrt(2) );
+	vPlaneRight = vertex_init(-1.0 / sqrt(2), 0, 1.0 / sqrt(2) );
+	vPlaneTop = vertex_init(0, -1.0 / sqrt(2), 1.0 / sqrt(2) );
+	vPlaneBot = vertex_init(0, 1.0 / sqrt(2), 1.0 / sqrt(2) );
+}
+void vertices_free(){
+	free(cPos);
+	free(vPlaneNear);
+	free(vPlaneLeft);
+	free(vPlaneRight);
+	free(vPlaneTop);
+	free(vPlaneBot);
+}
 void vertex_print(Vec4_t* v){
 	printf("X:[%.2lf]\tY:[%.2lf]\tZ:[%.2lf]\tT:[%.2lf]\n", v->v[POS_X], v->v[POS_Y], v->v[POS_Z], v->v[3]);
 }
@@ -24,8 +47,16 @@ double vertex_element(Vec4_t* v, int vElement){
 	return v->v[vElement];
 }
 void vertex_add(Vec4_t* a, Vec4_t* b){
-	for(int n = 0; n < 3; n++)
-		a->v[n] = a->v[n] + b->v[n];
+	double sum;
+	for(int n = 0; n < 3; n++){
+		sum = a->v[n] + b->v[n];
+		a->v[n] = sum;
+	}
+}
+void vertex_scalar(Vec4_t* v, double k){
+	for(int n = 0; n < 4; n++){
+		v->v[n] *= k;
+	}
 }
 void vertex_copy(Vec4_t* dest, Vec4_t* src){
 	for(int n = 0; n < 4; n++)
@@ -42,7 +73,7 @@ Vec4_t* vertex_lerp(Vec4_t* v1, Vec4_t* v2, double t){
 	Vec4_t* v = vertex_init(0,0,0);
 
 	for(int n = 0; n < 4; n++)
-		v->v[n] = ((t-1) * v1->v[n]) + (t * v2->v[n]);
+		v->v[n] = ((1.0 - t) * v1->v[n]) + (t * v2->v[n]);
 
 	return v;
 }
@@ -57,7 +88,7 @@ void vertex_normalize(Vec4_t* v){
 	v->v[POS_Z] /= length;
 }
 double vertex_dot_product(Vec4_t* a, Vec4_t* b){
-	return a->v[POS_X] * b->v[POS_X] + a->v[POS_Y] * b->v[POS_Y] + a->v[POS_Z] + b->v[POS_Z];
+	return a->v[POS_X] * b->v[POS_X] + a->v[POS_Y] * b->v[POS_Y] + a->v[POS_Z] * b->v[POS_Z];
 }
 Vec4_t *vertex_surface_normal(Vec4_t* a, Vec4_t* b, Vec4_t* c){
 	Vec4_t* sn = vertex_init(0,0,0);
