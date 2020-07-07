@@ -78,7 +78,6 @@ extern UT_array*** fArray;
 
 extern pixel_t ** inputBuffer;
 extern pixel_t ** frameBuffer;
-extern pixel_t ** frameBuffer_final;
 
 void abort_(const char* s, ...){
 	va_list args;
@@ -112,15 +111,15 @@ int main(int argc, char **argv){
 	SCREEN_WIDTH = 640;
 	SCREEN_HEIGHT = 480;
 
-	CANVAS_WIDTH = 5;
-	CANVAS_HEIGHT = 5;
+	CANVAS_WIDTH = 4;
+	CANVAS_HEIGHT = 3;
 	CANVAS_DEPTH = 1;
 
 	CAMERA_X = 0;
 	CAMERA_Y = 0;
 	CAMERA_Z = 0;
 
-	MSAA_ENABLED = 0;
+	MSAA_ENABLED = 1;
 
 	if(MSAA_ENABLED){
 		MSAA_DEPTH = 8;
@@ -150,38 +149,41 @@ int main(int argc, char **argv){
 
 
 
-
 	printf("obj file read!\n\n");
-
-	cstack_translate(0,0,1);
-	// cstack_scale(3,3,3);
-	// cstack_rotate(ROTATE_Z,M_PI/3);
-
-
 
 	printf("Executing main loop...\n");
 
+	cstack_translate(0,0,2);
+	//cstack_scale(500,500,1);
+	cstack_rotate(ROTATE_Y,M_PI/4);
+	cstack_rotate(ROTATE_X,M_PI/4);
 
-
+	printf("Shading vertices...\n");
 	shade_vertex_all();
-	matrix_print(mPoints);
+	printf("Vertices shaded!\n");
+
+	// matrix_print(mPoints);
+	// matrix_print(mNormals);
+	// matrix_print(mTextures);
+
+	printf("Generating polygons...\n");
 	shade_geometry();
+	printf("Polygons generated!\n");
 
 	//polygon_print_all();
 
+	printf("Rasterizing...\n");
 	rasterize_all();
+	printf("Rasterization complete!\n");
 
-	// shape_box(0,0,0,50,50,50);
-	// generate_normals();
-
-	//matrix_print(mPoints);
-	//matrix_print(mTextures);
-	//matrix_print(mNormals);
+	printf("Shading fragments...\n");
+	shade_fragment_all();
+	printf("Fragments shaded!\n");
 
 	//material_print_all();
 	//texture_print_all();
 
-	set_frameBuffer_random();
+	//set_frameBuffer_random();
 	if(MSAA_ENABLED)msaa();
 
 	printf("Main loop complete!\n\n");

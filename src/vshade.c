@@ -54,6 +54,8 @@ void shade_vertex_all(){
 		matrix_copy(mNormals,mNormalsFinal);
 		matrix_copy(mTextures,mTexturesFinal);
 
+		//matrix_print(mPoints);
+
 		for(int p = 0; p <= mPoints->lastcol; p++)
 			shade_vertex_perspective(p);
 
@@ -127,14 +129,14 @@ void shade_vertex_clipping(int p){
 
 	}
 
-	vertex_print(v[0]);
-	vertex_print(v[1]);
-	vertex_print(v[2]);
-	for(n = 0; n < 3; n++){
-		for(int m = 0; m < 5; m++) printf("%d ", inPlanes[n][m]);
-		printf("\n");
-	}
-	printf("\n");
+	// vertex_print(v[0]);
+	// vertex_print(v[1]);
+	// vertex_print(v[2]);
+	// for(n = 0; n < 3; n++){
+	// 	for(int m = 0; m < 5; m++) printf("%d ", inPlanes[n][m]);
+	// 	printf("\n");
+	// }
+	// printf("\n");
 
 	if(insideFull[0] || insideFull[1] || insideFull[2]){
 
@@ -176,8 +178,8 @@ void shade_vertex_clipping(int p){
 						// vertex_print(vTemp);
 
 						vertex_copy(v[n],vTemp);
-						vertex_copy(vn[n],vtTemp);
-						vertex_copy(vt[n],vnTemp);
+						vertex_copy(vn[n],vnTemp);
+						vertex_copy(vt[n],vtTemp);
 
 						free(vTemp);
 						free(vnTemp);
@@ -191,7 +193,6 @@ void shade_vertex_clipping(int p){
 			// vertex_print(v[0]);
 			// vertex_print(v[1]);
 			// vertex_print(v[2]);
-
 		}
 
 		for(n = 0; n < 3; n++){
@@ -200,7 +201,7 @@ void shade_vertex_clipping(int p){
 			matrix_add_point(mTexturesFinal,vt[n]);
 		}
 	}
-	printf("\n");
+	//printf("\n");
 
 	for(n = 0; n < 3; n++){
 		free(v[n]);

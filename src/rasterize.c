@@ -248,10 +248,15 @@ void *rasterize_help(void* ptr){
 
 			for(x = x0f; x <= x1f; x++){
 
-				f = frag_init(x,y,double_lerp(z0f,z1f,t2));
+				f = frag_init(x + SCREEN_WIDTH/2, y + SCREEN_HEIGHT/2, double_lerp(z0f, z1f, t2));
 
-				f->n = vertex_lerp(n0f,n1f,t2);
-				f->c = pixel_lerp(c0f,c1f,t2);
+				f->n = vertex_lerp(n0f, n1f, t2);
+				f->c = pixel_lerp(c0f, c1f, t2);
+				f->t[TEXTURE_U] = double_lerp(u0f, u1f, t2);
+				f->t[TEXTURE_V] = double_lerp(v0f, v1f, t2);
+				f->m = p->m;
+
+				//frag_print(f);
 
 				//pthread_mutex_lock(&fArray_mutex);
 

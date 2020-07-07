@@ -7,6 +7,7 @@
 #include "texture.h"
 #include "fragment.h"
 #include "vertex.h"
+#include "light.h"
 
 #include "utarray.h"
 
@@ -66,13 +67,12 @@ frag_t* frag_init(int x, int y, double z){
 }
 void frag_add(frag_t* f){
 	if(f->x >= 0 && f->y >= 0 && f->x < SCREEN_WIDTH && f->y < SCREEN_HEIGHT){
-		if(utarray_len(fArray[f->x][f->y]) == 0)
+		if(utarray_len(fArray[f->x][f->y]) == 0){
 			utarray_push_back(fArray[f->x][f->y],f);
+		}
 		else {
 			int p;
 			frag_t *tmp;
-
-
 			for(p = 0; p < utarray_len(fArray[f->x][f->y]); p++){
 				tmp = (frag_t*)utarray_eltptr(fArray[f->x][f->y],p);
 				if(tmp->z >= f->z){
@@ -83,6 +83,16 @@ void frag_add(frag_t* f){
 		}
 	}
 }
-frag_t* frag_find(int x, int y){ //NOTE: This gets the element with the highest z value
+frag_t* frag_find(int x, int y){ //NOTE: This gets the element with the lowest z value
 	return (frag_t*)utarray_front(fArray[x][y]);
+}
+
+void frag_print(frag_t* f){
+	printf("Fragment at location [%d,%d,%.2lf]:\n\n", f->x, f->y, f->z);
+	printf("Color:\n\t");
+	pixel_print(f->c);
+	printf("Normal:\n\t");
+	vertex_print(f->n);
+	printf("Texture coords:\n\tU: [%.2lf]\tV: [%.2lf]\n", f->t[TEXTURE_U], f->t[TEXTURE_V]);
+	printf("Material: [%s]\n\n", f->m->name);
 }

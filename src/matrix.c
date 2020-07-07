@@ -158,6 +158,7 @@ Vec4_t *matrix_find(mat_t* m, int p){
 	}
 
 	Vec4_t* v = vertex_init(m->m[POS_X][p],m->m[POS_Y][p],m->m[POS_Z][p]);
+	v->v[POS_T] = m->m[POS_T][p];
 	return v;
 }
 
@@ -170,7 +171,7 @@ void matrix_add_point(mat_t* m, Vec4_t* v){
 	m->m[POS_X][m->lastcol] = v->v[POS_X];
 	m->m[POS_Y][m->lastcol] = v->v[POS_Y];
 	m->m[POS_Z][m->lastcol] = v->v[POS_Z];
-	m->m[3][m->lastcol] = 1;
+	m->m[POS_T][m->lastcol] = v->v[POS_T];
 }
 
 void matrix_add_matrix_point(mat_t* dest, mat_t* src, int p){

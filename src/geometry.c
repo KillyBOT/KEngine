@@ -35,6 +35,7 @@ void polygon_add(int point){
 	if(point < 0 || point > mPoints->lastcol-2) return;
 
 	polygon_t* p = (polygon_t*)malloc(sizeof(polygon_t));
+	pixel_t c;
 
 	p->m = material_find_id((int)mTextures->m[POS_Z][point]);
 
@@ -84,20 +85,26 @@ void polygon_add(int point){
 
 	//Change the colors later
 
-	p->c[POLYGON_TOP]->c[COLOR_R] = 255;
-	p->c[POLYGON_TOP]->c[COLOR_G] = 255;
-	p->c[POLYGON_TOP]->c[COLOR_B] = 255;
-	p->c[POLYGON_TOP]->c[COLOR_A] = 0;
+	//Set them to random colors for now
+	c.c[COLOR_R] = rand() % 256;
+	c.c[COLOR_G] = rand() % 256;
+	c.c[COLOR_B] = rand() % 256;
+	c.c[COLOR_A] = 255;
 
-	p->c[POLYGON_MID]->c[COLOR_R] = 255;
-	p->c[POLYGON_MID]->c[COLOR_G] = 255;
-	p->c[POLYGON_MID]->c[COLOR_B] = 255;
-	p->c[POLYGON_MID]->c[COLOR_A] = 0;
+	p->c[POLYGON_TOP]->c[COLOR_R] = c.c[COLOR_R];
+	p->c[POLYGON_TOP]->c[COLOR_G] = c.c[COLOR_G];
+	p->c[POLYGON_TOP]->c[COLOR_B] = c.c[COLOR_B];
+	p->c[POLYGON_TOP]->c[COLOR_A] = c.c[COLOR_A];
 
-	p->c[POLYGON_BOT]->c[COLOR_R] = 255;
-	p->c[POLYGON_BOT]->c[COLOR_G] = 255;
-	p->c[POLYGON_BOT]->c[COLOR_B] = 255;
-	p->c[POLYGON_BOT]->c[COLOR_A] = 0;
+	p->c[POLYGON_MID]->c[COLOR_R] = c.c[COLOR_R];
+	p->c[POLYGON_MID]->c[COLOR_G] = c.c[COLOR_G];
+	p->c[POLYGON_MID]->c[COLOR_B] = c.c[COLOR_B];
+	p->c[POLYGON_MID]->c[COLOR_A] = c.c[COLOR_A];
+
+	p->c[POLYGON_BOT]->c[COLOR_R] = c.c[COLOR_R];
+	p->c[POLYGON_BOT]->c[COLOR_G] = c.c[COLOR_G];
+	p->c[POLYGON_BOT]->c[COLOR_B] = c.c[COLOR_B];
+	p->c[POLYGON_BOT]->c[COLOR_A] = c.c[COLOR_A];
 
 	p->t[POLYGON_TOP][TEXTURE_U] = mTextures->m[TEXTURE_U][point+iTop];
 	p->t[POLYGON_TOP][TEXTURE_V] = mTextures->m[TEXTURE_V][point+iTop];
@@ -115,7 +122,9 @@ void polygon_add(int point){
 	free(pToAdd);
 	free(nToAdd);
 
-	if(vertex_dot_product(p->sN,vPlaneNear) > 0)utarray_push_back(pQueue,p);
+	if(vertex_dot_product(p->sN,vPlaneNear) < 0){
+		utarray_push_back(pQueue,p);
+	}
 	else {
 		polygon_dtor_icd(p);
 		free(p);

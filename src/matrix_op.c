@@ -152,7 +152,7 @@ void matrix_ident(mat_t* m){
 
 void cstack_apply(){
 
-	mat_t* mi = matrix_create(cstack_peek()->rows,cstack_peek()->cols);
+	mat_t* mi = matrix_create(4,4);
 	matrix_copy(mi,cstack_peek());
 	matrix_inverse(mi);
 	matrix_transpose(mi);

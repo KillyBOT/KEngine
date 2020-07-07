@@ -13,7 +13,9 @@ void shade_fragment_all();
 void shade_geometry();
 void shade_vertex_perspective(int p);
 void shade_vertex_clipping(int p);
-void shade_fragment(frag_t* f);
+
+void shade_fragment_all();
+void shade_fragment(int x, int y);
 
 void rasterize_all();
 void *rasterize_help(void *ptr);

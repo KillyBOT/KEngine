@@ -13,7 +13,7 @@ ODIR = ../obj
 _DEPS = KEngine.h uthash.h utarray.h vertex.h material.h texture.h matrix.h geometry.h fragment.h light.h process.h shade.h parse.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ = lex.obj.o obj.tab.o lex.mtl.o mtl.tab.o main.o draw.o png_write.o jpg_read.o msaa.o matrix.o material.o texture.o matrix_op.o vertex.o shape.o box.o geometry.o fragment.o rasterize.o vshade.o gshade.o light.o
+_OBJ = lex.obj.o obj.tab.o lex.mtl.o mtl.tab.o main.o draw.o png_write.o jpg_read.o msaa.o matrix.o material.o texture.o matrix_op.o vertex.o shape.o box.o geometry.o fragment.o rasterize.o vshade.o gshade.o fshade.o light.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 $(ODIR)/%.o: %.c $(DEPS)

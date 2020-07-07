@@ -18,3 +18,7 @@ pixel_t* pixel_lerp(pixel_t* p1, pixel_t* p2, double t){
 double double_lerp(double d0, double d1, double t){
 	return (d0 * (1 - t)) + (d1 * t);
 }
+
+void pixel_print(pixel_t* p){
+	printf("R: [%d]\tG: [%d]\tB: [%d]\tA: [%d]\n", (int)p->c[COLOR_R], (int)p->c[COLOR_G], (int)p->c[COLOR_B], (int)p->c[COLOR_A]);
+}

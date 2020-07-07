@@ -29,6 +29,7 @@ void frag_dtor_icd(void *_elt);
 frag_t* frag_init(int x, int y, double z);
 void frag_add(frag_t* f);
 frag_t* frag_find(int x, int y);
+void frag_print(frag_t* f);
 
 UT_array *** fArray;
 UT_icd fragment_icd;
