@@ -17,15 +17,18 @@ extern Vec4_t* vView;
 pixel_t* ref_phong(Vec4_t* n, Vec4_t* p, mtl_t* m, double t[2] ){
 	pixel_t* cf = (pixel_t*)malloc(sizeof(pixel_t));
 	Vec4_t* i = vertex_init(0.0,0.0,0.0);
-	Vec4_t *lv,*li;
+	Vec4_t *lv,*li,*v;
 	Vec4_t *tmp;
 	light_t* l = NULL;
 
+	li = vertex_init(0,0,0);
+	lv = vertex_init(0,0,0);
+	v = vertex_init(0,0,0);
+
+
 	while( (l = (light_t*)utarray_next(gLights,l)) ){
 
-		li = vertex_init(0,0,0);
-		lv = vertex_init(0,0,0);
-
+		
 		vertex_copy(li,l->i);
 		vertex_copy(lv,l->v);
 
@@ -52,17 +55,22 @@ pixel_t* ref_phong(Vec4_t* n, Vec4_t* p, mtl_t* m, double t[2] ){
 			vertex_add(i, tmp);
 			free(tmp);
 
-			vertex_scalar(vView, -1);
-			tmp = ref_phong_s(lv, li, n, vView, m, t);
+			vertex_scalar(p, -1);
+			vertex_copy(v, cPos);
+			vertex_add(cPos, p);
+			vertex_scalar(p, -1);
+			vertex_normalize(v);
+
+			tmp = ref_phong_s(lv, li, n, v, m, t);
 			vertex_add(i,tmp);
-			vertex_scalar(vView, -1);
 			free(tmp);
 		}
 
-		free(li);
-		free(lv);
-
 	}
+
+	free(li);
+	free(lv);
+	free(v);
 
 	for(int c = 0; c < 3; c++){
 		if(i->v[c] > 1.0) i->v[c] = 1.0;

@@ -45,14 +45,14 @@ void lights_init(){
 
 	utarray_new(gLights,&light_icd);
 
-	light_t* alight = light_init(LIGHT_AMBIENT, 0, 0, 0, .2, .4, .7);
+	light_t* alight = light_init(LIGHT_AMBIENT, 0, 0, 0, .3, .3, .3);
 	light_add(alight);
 
-	light_t* plight = light_init(LIGHT_POINT, 0, 0, 0, .3, .8, .4);
-	light_add(plight);
+	// light_t* plight = light_init(LIGHT_POINT, 0, 0, 0, .4, .4, .4);
+	// light_add(plight);
 
-	light_t* dlight = light_init(LIGHT_DIRECTIONAL, 1, 4, 4, .9, .5, .1);
-	light_add(dlight);
+	// light_t* dlight = light_init(LIGHT_DIRECTIONAL, 0, 0, 0, .9, .5, .1);
+	// light_add(dlight);
 }
 void lights_free(){
 	utarray_free(gLights);

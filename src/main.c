@@ -142,17 +142,17 @@ int main(int argc, char **argv){
 
 	mtl_t* dMtl = material_find("Default");
 
-	dMtl->ka[COLOR_R] = 0.4;
-	dMtl->ka[COLOR_G] = 0.4;
-	dMtl->ka[COLOR_B] = 0.4;
+	dMtl->ka[COLOR_R] = 1.0;
+	dMtl->ka[COLOR_G] = 1.0;
+	dMtl->ka[COLOR_B] = 1.0;
 
-	dMtl->kd[COLOR_R] = 0.6;
-	dMtl->kd[COLOR_G] = 0.6;
-	dMtl->kd[COLOR_B] = 0.6;
+	dMtl->kd[COLOR_R] = 1.0;
+	dMtl->kd[COLOR_G] = 1.0;
+	dMtl->kd[COLOR_B] = 1.0;
 
-	dMtl->ks[COLOR_R] = 0.3;
-	dMtl->ks[COLOR_G] = 0.3;
-	dMtl->ks[COLOR_B] = 0.3;
+	dMtl->ks[COLOR_R] = 1.0;
+	dMtl->ks[COLOR_G] = 1.0;
+	dMtl->ks[COLOR_B] = 1.0;
 
 
 
@@ -171,9 +171,10 @@ int main(int argc, char **argv){
 	printf("Executing main loop...\n");
 
 	cstack_translate(0,0,2);
+	//cstack_rotate(ROTATE_X, M_PI);
 	//cstack_scale(500,500,1);
-	cstack_rotate(ROTATE_Y,M_PI/4);
-	cstack_rotate(ROTATE_X,M_PI/4);
+	// cstack_rotate(ROTATE_Y,M_PI/4);
+	// cstack_rotate(ROTATE_X,M_PI/4);
 
 	printf("\tShading vertices...\n");
 	shade_vertex_all();

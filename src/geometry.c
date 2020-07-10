@@ -102,22 +102,23 @@ void polygon_add(int point){
 	//Change the colors later
 
 	switch(p->shadeType){
+
 		default:
 			c.c[COLOR_R] = rand() % 256;
 			c.c[COLOR_G] = rand() % 256;
 			c.c[COLOR_B] = rand() % 256;
 			c.c[COLOR_A] = 255;
 
+			for(int poly = 0; poly < 3; poly++){
+				for(int color = 0; color < 4; color++){
+					p->c[poly]->c[color] = c.c[color];
+				}
+			}
+
 			break;
 	}
 
 	//Set them to random colors for now
-
-	for(int poly = 0; poly < 3; poly++){
-		for(int color = 0; color < 4; color++){
-			p->c[poly]->c[color] = c.c[color];
-		}
-	}
 
 	for(int n = 0; n < 3; n++){
 		free(pToAdd[n]);

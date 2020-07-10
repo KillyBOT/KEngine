@@ -53,7 +53,8 @@ void shade_fragment_all(){
 				c = ref_phong(f->n, p, f->m, f->t);
 
 				for(int n = 0; n < 4; n++)
-					frameBuffer[x][y].c[n] = c->c[n];
+						frameBuffer[x][y].c[n] = c->c[n];
+				
 
 				free(c);
 			}
