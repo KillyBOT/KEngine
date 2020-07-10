@@ -75,12 +75,13 @@ void frag_add(frag_t* f){
 			frag_t *tmp;
 			for(p = 0; p < utarray_len(fArray[f->x][f->y]); p++){
 				tmp = (frag_t*)utarray_eltptr(fArray[f->x][f->y],p);
-				if(tmp->z >= f->z){
+				if(tmp->z < f->z){
 					utarray_insert(fArray[f->x][f->y],f,p);
 					return;
 				}
 			}
 		}
+
 	}
 }
 frag_t* frag_find(int x, int y){ //NOTE: This gets the element with the lowest z value

@@ -250,7 +250,10 @@ void *rasterize_help(void* ptr){
 
 				f = frag_init(x + SCREEN_WIDTH/2, y + SCREEN_HEIGHT/2, double_lerp(z0f, z1f, t2));
 
+				f->shadeType = p->shadeType;
+				f->ifLight = p->ifLight;
 				f->n = vertex_lerp(n0f, n1f, t2);
+				vertex_normalize(f->n);
 				f->c = pixel_lerp(c0f, c1f, t2);
 				f->t[TEXTURE_U] = double_lerp(u0f, u1f, t2);
 				f->t[TEXTURE_V] = double_lerp(v0f, v1f, t2);

@@ -7,6 +7,7 @@
 #include "KEngine.h"
 #include "vertex.h"
 #include "matrix.h"
+#include "light.h"
 #include "material.h"
 #include "geometry.h"
 
@@ -43,8 +44,13 @@ void polygon_add(int point){
 	p->n = (Vec4_t**)malloc(sizeof(Vec4_t*) * 3);
 	p->c = (pixel_t**)malloc(sizeof(pixel_t*) * 3);
 
+	p->ifLight = 1;
+	p->shadeType = -1;
+
 	int iTop, iMid, iBot;
+	pixel_t *cTop, *cMid, *cBot;
 	double yMax, yMin;
+	Vec4_t *vCenter;
 
 	yMax = -99999999;
 	yMin = 99999999;
@@ -83,29 +89,6 @@ void polygon_add(int point){
 	vertex_copy(p->n[POLYGON_MID],nToAdd[iMid]);
 	vertex_copy(p->n[POLYGON_BOT],nToAdd[iBot]);
 
-	//Change the colors later
-
-	//Set them to random colors for now
-	c.c[COLOR_R] = rand() % 256;
-	c.c[COLOR_G] = rand() % 256;
-	c.c[COLOR_B] = rand() % 256;
-	c.c[COLOR_A] = 255;
-
-	p->c[POLYGON_TOP]->c[COLOR_R] = c.c[COLOR_R];
-	p->c[POLYGON_TOP]->c[COLOR_G] = c.c[COLOR_G];
-	p->c[POLYGON_TOP]->c[COLOR_B] = c.c[COLOR_B];
-	p->c[POLYGON_TOP]->c[COLOR_A] = c.c[COLOR_A];
-
-	p->c[POLYGON_MID]->c[COLOR_R] = c.c[COLOR_R];
-	p->c[POLYGON_MID]->c[COLOR_G] = c.c[COLOR_G];
-	p->c[POLYGON_MID]->c[COLOR_B] = c.c[COLOR_B];
-	p->c[POLYGON_MID]->c[COLOR_A] = c.c[COLOR_A];
-
-	p->c[POLYGON_BOT]->c[COLOR_R] = c.c[COLOR_R];
-	p->c[POLYGON_BOT]->c[COLOR_G] = c.c[COLOR_G];
-	p->c[POLYGON_BOT]->c[COLOR_B] = c.c[COLOR_B];
-	p->c[POLYGON_BOT]->c[COLOR_A] = c.c[COLOR_A];
-
 	p->t[POLYGON_TOP][TEXTURE_U] = mTextures->m[TEXTURE_U][point+iTop];
 	p->t[POLYGON_TOP][TEXTURE_V] = mTextures->m[TEXTURE_V][point+iTop];
 
@@ -115,6 +98,27 @@ void polygon_add(int point){
 	p->t[POLYGON_BOT][TEXTURE_U] = mTextures->m[TEXTURE_U][point+iBot];
 	p->t[POLYGON_BOT][TEXTURE_V] = mTextures->m[TEXTURE_V][point+iBot];
 
+
+	//Change the colors later
+
+	switch(p->shadeType){
+		default:
+			c.c[COLOR_R] = rand() % 256;
+			c.c[COLOR_G] = rand() % 256;
+			c.c[COLOR_B] = rand() % 256;
+			c.c[COLOR_A] = 255;
+
+			break;
+	}
+
+	//Set them to random colors for now
+
+	for(int poly = 0; poly < 3; poly++){
+		for(int color = 0; color < 4; color++){
+			p->c[poly]->c[color] = c.c[color];
+		}
+	}
+
 	for(int n = 0; n < 3; n++){
 		free(pToAdd[n]);
 		free(nToAdd[n]);
@@ -122,13 +126,14 @@ void polygon_add(int point){
 	free(pToAdd);
 	free(nToAdd);
 
+	//utarray_push_back(pQueue,p);
 	if(vertex_dot_product(p->sN,vPlaneNear) < 0){
 		utarray_push_back(pQueue,p);
-	}
-	else {
+	} else {
 		polygon_dtor_icd(p);
 		free(p);
 	}
+	
 }
 void polygon_dtor_icd(void *_elt){
 	polygon_t* p = (polygon_t*)_elt;

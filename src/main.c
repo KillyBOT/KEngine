@@ -65,10 +65,10 @@ extern mat_t* mPointsToAdd;
 extern mat_t* mNormalsToAdd;
 extern mat_t* mTexturesToAdd;
 extern UT_array* cstack;
-extern UT_icd matrix_icd;
 
 
 
+extern UT_array* gLights;
 extern mtl_t* gMaterials;
 extern tex_t* gTextures;
 extern UT_array* pQueue;
@@ -91,7 +91,9 @@ void abort_(const char* s, ...){
 int main(int argc, char **argv){
 
 	if(argc < 2)
-		abort_("Error! Must specify file!");
+		abort_("Error! Must specify input file!");
+	if(argc < 3)
+		abort_("Error! Must specify target file!");
 
 	printf("Initializing general structures...\n");
 
@@ -134,8 +136,23 @@ int main(int argc, char **argv){
 	polygons_init();
 	vertices_init();
 	frag_array_init();
+	lights_init();
 
 	material_add("Default");
+
+	mtl_t* dMtl = material_find("Default");
+
+	dMtl->ka[COLOR_R] = 0.4;
+	dMtl->ka[COLOR_G] = 0.4;
+	dMtl->ka[COLOR_B] = 0.4;
+
+	dMtl->kd[COLOR_R] = 0.6;
+	dMtl->kd[COLOR_G] = 0.6;
+	dMtl->kd[COLOR_B] = 0.6;
+
+	dMtl->ks[COLOR_R] = 0.3;
+	dMtl->ks[COLOR_G] = 0.3;
+	dMtl->ks[COLOR_B] = 0.3;
 
 
 
@@ -158,27 +175,27 @@ int main(int argc, char **argv){
 	cstack_rotate(ROTATE_Y,M_PI/4);
 	cstack_rotate(ROTATE_X,M_PI/4);
 
-	printf("Shading vertices...\n");
+	printf("\tShading vertices...\n");
 	shade_vertex_all();
-	printf("Vertices shaded!\n");
+	printf("\tVertices shaded!\n");
 
 	// matrix_print(mPoints);
 	// matrix_print(mNormals);
 	// matrix_print(mTextures);
 
-	printf("Generating polygons...\n");
+	printf("\tGenerating polygons...\n");
 	shade_geometry();
-	printf("Polygons generated!\n");
+	printf("\tPolygons generated!\n");
 
 	//polygon_print_all();
 
-	printf("Rasterizing...\n");
+	printf("\tRasterizing...\n");
 	rasterize_all();
-	printf("Rasterization complete!\n");
+	printf("\tRasterization complete!\n");
 
-	printf("Shading fragments...\n");
+	printf("\tShading fragments...\n");
 	shade_fragment_all();
-	printf("Fragments shaded!\n");
+	printf("\tFragments shaded!\n");
 
 	//material_print_all();
 	//texture_print_all();
@@ -189,7 +206,7 @@ int main(int argc, char **argv){
 	printf("Main loop complete!\n\n");
 
 	printf("Drawing picture...\n");
-	write_png_file("test.png");
+	write_png_file(argv[2]);
 	printf("Picture drawn!\n\n");
 
 	printf("Freeing structures...\n");
@@ -201,6 +218,7 @@ int main(int argc, char **argv){
 	texture_delete_all();
 	material_delete_all();
 	frag_array_free();
+	lights_free();
 	printf("Structures freed!\n\n");
 
 

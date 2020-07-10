@@ -25,6 +25,7 @@ Vec4_t* vertex_init(double x, double y, double z){
 }
 void vertices_init(){
 	cPos = vertex_init(0,0,0);
+	vView = vertex_init(0,0,1);
 	vPlaneNear = vertex_init(0,0,1);
 	vPlaneLeft = vertex_init( 1.0 / sqrt(2), 0, 1.0 / sqrt(2) );
 	vPlaneRight = vertex_init(-1.0 / sqrt(2), 0, 1.0 / sqrt(2) );
@@ -33,6 +34,7 @@ void vertices_init(){
 }
 void vertices_free(){
 	free(cPos);
+	free(vView);
 	free(vPlaneNear);
 	free(vPlaneLeft);
 	free(vPlaneRight);

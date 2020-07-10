@@ -15,6 +15,9 @@
 
 extern int SCREEN_WIDTH;
 extern int SCREEN_HEIGHT;
+extern int CANVAS_WIDTH;
+extern int CANVAS_HEIGHT;
+extern int CANVAS_DEPTH;
 
 extern UT_array*** fArray;
 extern pixel_t ** frameBuffer;
@@ -25,6 +28,9 @@ extern tex_t* gTextures;
 void shade_fragment_all(){
 
 	frag_t* f = NULL;
+	Vec4_t* p = vertex_init(0,0,0);
+	Vec4_t* v = vertex_init(0,0,0);
+	pixel_t* c;
 
 	for(int x = 0; x < SCREEN_WIDTH; x++){
 		for(int y = 0; y < SCREEN_HEIGHT; y++){
@@ -35,10 +41,26 @@ void shade_fragment_all(){
 			f = frag_find(x,y);
 
 			if(f != NULL){
-				for(int c = 0; c < 4; c++)
-					frameBuffer[x][y].c[c] = f->c->c[c];
+
+				p->v[POS_X] = (f->x) * ((double)CANVAS_WIDTH / (double)SCREEN_WIDTH);
+				p->v[POS_Y] = (f->y) * ((double)CANVAS_HEIGHT / (double)SCREEN_HEIGHT);
+
+				p->v[POS_X] /= ((double)CANVAS_DEPTH * f->z);
+				p->v[POS_Y] /= ((double)CANVAS_DEPTH * f->z);
+
+				p->v[POS_Z] = 1.0 / (f->z);
+
+				c = ref_phong(f->n, p, f->m, f->t);
+
+				for(int n = 0; n < 4; n++)
+					frameBuffer[x][y].c[n] = c->c[n];
+
+				free(c);
 			}
 
 		}
 	}
+
+	free(p);
+	free(v);
 }
